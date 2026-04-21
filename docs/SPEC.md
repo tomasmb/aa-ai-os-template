@@ -96,6 +96,7 @@ alpha-assistant/
     README.md                    how packs work, how to add/remove them
     company-writing.md           Alpha writing voice + structure (v1.1)
     company-meetings.md          meeting prep + ingest (read.ai-ready, v1.1)
+    company-scheduling.md        1-1 + meeting scheduling via GCal MCP (v1.2)
     team-<team>.md               team-level pack (optional install)
     personal-*.md                user can add their own
 

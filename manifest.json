@@ -1,31 +1,30 @@
 {
   "$schema": "https://raw.githubusercontent.com/tomasmb/aa-ai-os-template/main/docs/manifest.schema.json",
   "name": "alpha-assistant",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "released_at": "2026-04-21",
   "channel": "stable",
   "changelog": [
-    "New hires get their Notion onboarding card walked through step by step",
-    "Existing employees skip the onboarding and go straight to helping you work",
-    "Canonical Alpha pages are now hardcoded so you don't need to paste URLs"
+    "Your assistant can now schedule 1-1 meetings for you — connect Google Calendar once and say 'schedule intro 1-1s with my team'",
+    "New hires get scheduling done with them, not just reminded — the onboarding checklist item becomes a 5-minute conversation",
+    "No new setup required for existing users — upgrade keeps everything as-is"
   ],
   "changelog_semver": [
-    "Contract v1.1: Rule 5 split into new-hire vs existing-employee flows",
-    "Added onboarding/new-hire-flow.md orchestration playbook for the New Hire Onboarding database",
-    "NOTION-SYNC.md now hardcodes the canonical Alpha Notion URLs",
-    "Onboarding templates (company/team/role) point at real Operating Framework + Team directory",
-    "First manifest.json shipped — update checks now work"
+    "Added packs/company-scheduling.md — Google Calendar-based 1-1 scheduling using Notion Team directory for attendees and USER.md / WORKSTYLE.md for constraints",
+    "TOOLS.md: Google Calendar MCP documented with per-host setup (Claude Desktop, Cursor, Claude Code, Codex CLI, openclaw) and minimal OAuth scopes (freebusy + events only)",
+    "onboarding/new-hire-flow.md: introduced pack-delegation table so checklist items that can be actively executed (scheduling today, more later) get offered instead of just reminded",
+    "packs/README.md + docs/SPEC.md: scheduling pack added to default shipping set; MCP requirement matrix added"
   ],
   "download": {
-    "url": "https://github.com/tomasmb/aa-ai-os-template/releases/download/v1.1.0/alpha-assistant-v1.1.0.zip",
-    "latest_url": "https://github.com/tomasmb/aa-ai-os-template/releases/latest/download/alpha-assistant-v1.1.0.zip",
+    "url": "https://github.com/tomasmb/aa-ai-os-template/releases/download/v1.2.0/alpha-assistant-v1.2.0.zip",
+    "latest_url": "https://github.com/tomasmb/aa-ai-os-template/releases/latest/download/alpha-assistant-v1.2.0.zip",
     "sha256": "",
     "size_bytes": 0,
     "_note": "sha256 + size are populated in the release-attached copy of this manifest. The in-repo copy intentionally omits them because its own hash would be a self-reference. Assistants read the remote manifest via manifest_url to get the live numbers."
   },
   "manifest_url": "https://github.com/tomasmb/aa-ai-os-template/releases/latest/download/manifest.json",
   "repository": "https://github.com/tomasmb/aa-ai-os-template",
-  "release_notes_url": "https://github.com/tomasmb/aa-ai-os-template/releases/tag/v1.1.0",
+  "release_notes_url": "https://github.com/tomasmb/aa-ai-os-template/releases/tag/v1.2.0",
   "minimum_previous_version": "1.0.0",
   "migrations": [],
   "protected_files": [

@@ -26,10 +26,23 @@ from Notion and writes it here.
 
 ## Recommended first packs
 
-- `company-writing.md` — writing norms (voice, brevity, structure).
-- `company-meetings.md` — meeting prep + follow-up templates.
-- `team-<your-team>.md` — team-specific rituals and workflows.
+- `company-writing.md` — Alpha's writing voice + structure. **Ships by default.**
+- `company-meetings.md` — meeting prep + post-meeting ingest (read.ai-ready).
+  **Ships by default.**
+- `company-scheduling.md` — 1-1 and meeting scheduling via Google Calendar +
+  Notion Team directory. **Ships by default.** Unlocks once the user connects
+  Google Calendar MCP (see `TOOLS.md`). Highest day-1 value for new hires.
+- `team-<your-team>.md` — team-specific rituals and workflows. Pull from
+  the Packs Library when available.
 - `personal-custom.md` — anything you want the assistant to always do your way.
+
+## Which packs need extra MCPs
+
+| Pack | Extra MCP needed | Behavior if MCP missing |
+|---|---|---|
+| `company-writing.md` | None | Works out of the box. |
+| `company-meetings.md` | None (paste-based today); optional read.ai / Gmail later | Works on pasted meeting notes. |
+| `company-scheduling.md` | **Google Calendar MCP** | Assistant offers to set it up the first time the user triggers the pack. |
 
 ## Removing a pack
 

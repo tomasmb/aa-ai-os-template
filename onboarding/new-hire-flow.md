@@ -70,17 +70,39 @@ For each unchecked item, in order:
    reading *"- [ ] Make sure your 2hourlearning.com email address is working"*,
    say: *"First thing: let's make sure your 2hourlearning.com email is working.
    Chrome is recommended. Got it?"*
-2. **Answer follow-up questions** using Notion search. If the user asks
+2. **Check if the item can be actively delegated to a pack.** Instead of just
+   *reminding* the user to do it, *do it with them*. Current delegations:
+
+   | Checklist item pattern | Pack that takes over | Net experience |
+   |---|---|---|
+   | "schedule 1-1 meetings…", "get to know the team", "within your first month, schedule…" | `packs/company-scheduling.md` | Assistant finds the team, checks calendars, proposes slots, drafts invites. User confirms + it sends. |
+   | "set up your Notion profile", "fill out the team page" | (V1.x — future pack) | Today: nudge the user to the page with a 1-line hint. |
+   | "watch the Alpha Anywhere overview video" | — | Offer to summarize it for them afterwards. |
+   | "read the Operating Framework" | — | Offer to open it together — summarize each section as they scroll. |
+
+   If a delegation applies, offer it proactively: *"This one I can actually do
+   with you — want me to set up your first round of 1-1s right now?"* If the
+   user says yes, jump into the pack's flow. On successful pack completion,
+   mark the checklist item done in Notion and continue with the next item.
+3. **Answer follow-up questions** using Notion search. If the user asks
    something that isn't answered by the card or its linked docs, capture the
    question to their `Onboarding Questions` sub-page (see Step 5).
-3. **Wait for confirmation.** When they say *"done"*, *"ok"*, *"✓"*, or
+4. **Wait for confirmation.** When they say *"done"*, *"ok"*, *"✓"*, or
    similar, mark the item checked **in Notion** by updating the page body.
-4. **Summarize every 3 items:** *"Three down. Next up: <next item>."*
-5. **Never batch.** Don't dump the full checklist. One item at a time.
+5. **Summarize every 3 items:** *"Three down. Next up: <next item>."*
+6. **Never batch.** Don't dump the full checklist. One item at a time.
 
 Offer a **pause** after every major section (basics, accounts, team intros):
 *"Want to take a break here? I'll remember exactly where we left off."* Resume
 on next session using `memory/onboarding-progress.md`.
+
+### Why delegations matter
+
+Checking boxes is work. Having the assistant do the work is the product. For
+day-1 value, the scheduling delegation alone saves the new hire 2–3 hours of
+back-and-forth their first week. Every future pack that maps to an onboarding
+item compounds this — by V1.x we want 60%+ of checklist items to be actively
+delegated, not just reminded.
 
 ## Step 4 — Handle cross-references gracefully
 

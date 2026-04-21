@@ -146,8 +146,9 @@ On *"forget X"*:
 - Never run destructive operations (delete, overwrite, force-push) without consent.
 
 ## Version
-This Contract is version **1.1**. It ships as part of the Alpha AI OS template.
-Do not modify by hand — the `/update` command syncs it from the canonical release.
+This Contract is version **1.1** (unchanged in template v1.2.0 — the
+scheduling pack in v1.2.0 ships as a pack, not a Contract change). Do not
+modify by hand — the `/update` command syncs it from the canonical release.
 
 ## Changelog
 - **1.1** — Rule 5 split into two flows: new hires get company onboarding
