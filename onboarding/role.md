@@ -1,28 +1,43 @@
-# onboarding/role.md — What this role does
+# onboarding/role.md — This user's role context
 
-> Filled during first-run setup based on the user's role answer + the relevant
-> role primer pulled from Notion. Updated on role changes.
+> Populated by the assistant after the user answers "What's your role?" during
+> first-run setup. If the user is a new hire, the authoritative source is
+> their onboarding card's `Job Title` + `Department`. Updated on role change.
 
-## Role
+## Source of truth
 
-(filled during setup)
+- **User's role:** *(filled during setup)*
+- **User's department:** *(filled during setup — Product / Marketing / Program
+  Advisor / Coaching / Parent Experience / Academics / Ops / Life Skills)*
+- **User's onboarding card** (if new hire): *(filled during setup — URL)*
+- **Role reference page** (if one exists in the Team directory): *(filled
+  during setup)*
 
-## Key responsibilities
+## What gets cached here
 
-(filled from Notion role primer)
+### Key responsibilities
+*(summarized from the role reference page, the user's onboarding card body,
+and corrections the user makes over time)*
 
-## Success metrics for this role
+### Success metrics for this role
+*(filled from Notion; kept current by the assistant as the user mentions
+things they're measured on)*
 
-(filled from Notion role primer)
+### Common workflows
+*(filled and grown over time — starts empty, adds workflows as the user shows
+them)*
 
-## Common workflows
+### Who to ping for what
+*(filled from the team page + the user's own "I ping X about Y" mentions)*
 
-(filled from Notion role primer)
+## Refresh cadence
 
-## Who to ping for what
-
-(filled from Notion role primer)
+- **On session start:** re-sync if the role reference page or the user's
+  onboarding card has changed.
+- **On role change:** re-ask the role gate question, then full re-sync.
+- **Ongoing:** grow the "workflows" and "who to ping" sections incrementally
+  as the user reveals patterns.
 
 ## Last synced
 
-(auto)
+*(auto)*

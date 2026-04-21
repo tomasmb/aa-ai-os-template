@@ -1,28 +1,42 @@
-# onboarding/team.md — This user's team primer
+# onboarding/team.md — This user's team context
 
-> Pulled from Notion based on the user's team answer during setup. Updated on
-> team change.
+> Populated by the assistant after the user answers "What team/department are
+> you on?" during first-run setup. Pulled from Notion's Team directory. Edit
+> the Notion page, not this file.
 
-## Team
+## Source of truth
 
-(filled during setup)
+- **Team directory in Notion:** https://www.notion.so/2892901d790880c0a0e9d5594c29861d
+- **User's team:** *(filled during setup — matches one of the Department values
+  from the `👋 New Hire Onboarding` database: Product, Marketing, Program
+  Advisor, Coaching, Parent Experience, Academics, Ops, Life Skills.)*
+- **User's team page:** *(filled during setup — a specific sub-page or profile
+  under the Team directory)*
 
-## Members
+## What gets cached here
 
-(filled from Notion team primer)
+### The team in one sentence
+*(filled automatically)*
 
-## Current projects
+### Members + their owned areas
+*(filled automatically from the team page)*
 
-(filled from Notion team primer)
+### Current projects / OKRs
+*(filled from the team page, or the linked project pages)*
 
-## Rituals and cadences
+### Rituals + cadences
+*(standup day, demo day, review cadence — filled from the team page)*
 
-(filled from Notion team primer — standup day, review cadence, demo day)
+### Team norms
+*(writing norms, review rules, on-call / pager policy — filled from the team page)*
 
-## Norms
+## Refresh cadence
 
-(filled from Notion team primer — PR review rules, writing norms, on-call, etc.)
+- **On every session start:** if the team page's last edited time is newer,
+  re-sync.
+- **On role/team change the user mentions:** ask the gate question, swap team,
+  re-sync.
 
 ## Last synced
 
-(auto)
+*(auto)*

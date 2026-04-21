@@ -53,17 +53,43 @@ For every release:
 
 Before telling employees at large, these must be true:
 
-- [ ] `manifest.json` attached to the latest release (so update checks work).
-- [ ] Every page the assistant writes to has an `## Assistant Updates` section.
-- [ ] `NOTION-SYNC.md` has real page URLs for: company hub, onboarding modules,
-      packs library, promotion rules.
-- [ ] Company primer + at least one team primer + at least one role primer exist.
-- [ ] `company-writing.md` and `company-meetings.md` packs exist.
-- [ ] Owner-digest channel is live (Slack DM or email).
-- [ ] 3 non-maintainer pilot users ran the full onboarding + used it for a week
-      with no major complaints.
+- [x] `manifest.json` attached to the latest release (so update checks work).
+      *Shipped in v1.1.0.*
+- [x] `NOTION-SYNC.md` has real page URLs for: AI OS hub, Operating Framework,
+      Team directory, New Hire Onboarding DB, Onboarding Modules, Packs Library,
+      Promotion Rules. *Shipped in v1.1.0.*
+- [x] New hire gate built into `setup-questionnaire.md` + `new-hire-flow.md`.
+      *Shipped in v1.1.0.*
+- [x] `packs/company-writing.md` and `packs/company-meetings.md` exist.
+      *Shipped in v1.1.0. Meetings pack is read.ai-ready.*
+- [ ] **Every page the assistant writes to has an `## Assistant Updates` section.**
+      At minimum: the hub, Operating Framework, each top-level Team page.
+      *Tracked in the roadmap page; owner: Tomás / each team lead.*
+- [ ] **Owner-digest channel is live** (Slack DM or email — weekly consolidation
+      of what landed in each page's inbox).
+- [ ] **3 non-maintainer pilot users** ran the full onboarding + used it for a
+      week with no major complaints.
 
-Until all of these are true, invite-only pilots.
+Items 1–4 are **done**. Items 5–7 are the remaining gates before company-wide
+rollout.
+
+## How to add `## Assistant Updates` sections at scale
+
+The fastest way is a one-time script run by the page owner:
+
+1. Open the page.
+2. At the very bottom, add:
+   ```
+   ## Assistant Updates
+
+   > This section collects auto-promoted notes from people's AI assistants.
+   > Reviewed weekly by the page owner and consolidated into the canonical
+   > content above. Do not edit canonical content from this section.
+   ```
+3. Save. That's it — the assistant starts writing here on next session.
+
+Track adoption in a simple Notion checklist: one row per canonical page,
+checked when the inbox is live.
 
 ## Anti-patterns to avoid
 

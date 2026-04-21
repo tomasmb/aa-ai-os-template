@@ -86,16 +86,18 @@ alpha-assistant/
   TOOLS.md                       MCPs expected; fallback behavior if missing
 
   onboarding/
-    company.md                   company primer (pulled from Notion)
-    role.md                      role primer (fills during setup)
-    team.md                      team primer (pulled from Notion)
     setup-questionnaire.md       the conversation the AI runs on first boot
+    new-hire-flow.md             orchestration playbook for the 👋 New Hire Onboarding DB
+    company.md                   company context cache (pulled from Operating Framework)
+    team.md                      team context cache (pulled from Team directory)
+    role.md                      role context cache (from onboarding card + role page)
 
   packs/
-    company-writing.md           org-level pack (optional install)
-    company-coding.md
+    README.md                    how packs work, how to add/remove them
+    company-writing.md           Alpha writing voice + structure (v1.1)
+    company-meetings.md          meeting prep + ingest (read.ai-ready, v1.1)
     team-<team>.md               team-level pack (optional install)
-    personal-custom.md           user can add their own
+    personal-*.md                user can add their own
 
   memory/
     YYYY-MM-DD.md                daily notes (one per day)
@@ -103,10 +105,15 @@ alpha-assistant/
     relationships.md             who's who: collaborators, clients, family
     recurring-work.md            patterns the AI has noticed
     learnings.md                 things learned from outcomes
+    onboarding-progress.md       mid-onboarding recovery state (new hires only)
+    meetings/                    one file per meeting, structured header + raw notes
+    templates/                   scaffolds the assistant fills in
 
   logs/
     session-log.md               append-only session summaries
+    pending-writes.md            queue for captures that couldn't reach Notion
 
+  manifest.json                  update manifest (version, sha256, changelog)
   .version                       folder-standard version for update/migration
   .backups/                      automatic pre-migration backups
 ```
@@ -137,9 +144,14 @@ See `CONTRACT.md` (template below, in full form).
    improvements"). Never say semver unless the user explicitly asks.
 4. **Proactive capture.** When the user states a fact, decision, preference, or commitment,
    capture it without asking. Create entities if they don't exist.
-5. **Onboarding (first run).** If USER is incomplete, run the setup conversation — one question at a
-   time, plain English, skip anything the user skips. Also detect if the host's built-in memory is
-   on and offer to turn it off (the AI OS is the single source of truth).
+5. **Onboarding (two flows, gated).** If USER is incomplete, run the setup conversation — one
+   question at a time, plain English, skip anything the user skips. Ask early whether the user is
+   a new hire. **If new hire:** orchestrate the full company onboarding from their card in the
+   `👋 New Hire Onboarding` Notion database (walk the checklist item-by-item, mark items done in
+   Notion, capture Q&A to an `Onboarding Questions` sub-page on their card — see
+   `onboarding/new-hire-flow.md`). **If existing employee:** skip the new-hire flow entirely and
+   go straight to personalization. Also detect if the host's built-in memory is on and offer to
+   turn it off (the AI OS is the single source of truth).
 6. **Recall and truthfulness.** Answer from memory or say "I don't have that yet." Never invent.
 7. **Self-repair.** Every boot, verify schema version, MCP connections (especially Notion),
    host-memory toggle, maintenance schedule, daily note, USER completeness. Fix with one-question

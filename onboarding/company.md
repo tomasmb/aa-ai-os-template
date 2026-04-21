@@ -1,25 +1,46 @@
-# onboarding/company.md — Alpha Anywhere primer
+# onboarding/company.md — Alpha Anywhere context cache
 
-> The assistant pulls the latest version of this content from Notion on first
-> run and keeps it cached here. Edit the Notion page, not this file — the local
-> copy is refreshed automatically.
+> The assistant reads Alpha's canonical Notion pages and caches a summary here
+> so it has company context in every session without re-fetching. Edit the
+> Notion pages, not this file — the local copy refreshes automatically.
 
-## Source of truth
+## Canonical sources in Notion
 
-- **Notion page:** (filled during setup — "Company Primer" under Onboarding Modules)
-- **Last synced:** (filled automatically)
+| Page | What it tells you | Notion URL |
+|---|---|---|
+| **Operating Framework** | How Alpha works — decision norms, rituals, operating cadence | https://www.notion.so/2892901d79088097b23ff06dbb41b4dc |
+| **Team directory** | Who works at Alpha, their roles, what they own | https://www.notion.so/2892901d790880c0a0e9d5594c29861d |
+| **👋 New Hire Onboarding** (database) | Per-employee onboarding cards. Used for new hires only. | https://www.notion.so/2922901d7908802ab4d6d0b79fb15722 |
+| **Alpha AI OS — V1** (hub) | This assistant's user-facing documentation hub | https://www.notion.so/3492901d790881df80e3fbfefd7e7b70 |
 
-## What lives here after sync
+## What gets cached here after first session
 
-- Mission + values (one paragraph each).
-- How Alpha works (teams, rituals, decision-making norms).
-- Glossary — abbreviations, internal jargon, tool names.
-- "Who's who" — leaders and their scope.
-- Company-wide norms (async-first, one-on-ones, writing culture, etc.).
+After the first real session, this file holds a compact summary the assistant
+maintains itself:
 
-## Why this file exists
+### Mission (one paragraph, from Operating Framework)
+*(filled automatically)*
 
-When the assistant boots in a new folder, it needs organizational context
-immediately. Pulling from Notion guarantees every employee's assistant is
-grounded in the same primer. Maintaining the primer in one place (Notion)
-keeps it editable by the owner and versioned by Notion itself.
+### How Alpha decides (from Operating Framework)
+*(filled automatically)*
+
+### Rituals + cadences (from Operating Framework)
+*(filled automatically)*
+
+### Glossary — abbreviations & internal terms
+*(filled automatically — growable as the user encounters new terms)*
+
+### Who's who — leaders + scope (from Team directory)
+*(filled automatically — top-of-funnel only, full list in Notion)*
+
+## Refresh cadence
+
+- **On every session start:** check if the Operating Framework page's last
+  edited time is newer than this file's cache timestamp. If yes, re-sync.
+- **On demand:** user says *"refresh Alpha context"* → re-sync all four
+  sources above.
+- **Monthly:** full re-sync regardless.
+
+## Last synced
+
+*(auto — timestamp written after each successful sync)*
