@@ -1,0 +1,9 @@
+.backups/
+logs/*.md
+!logs/.gitkeep
+memory/YYYY-MM-DD.md
+memory/*.md
+!memory/README.md
+!memory/templates/
+!memory/templates/**
+.DS_Store
