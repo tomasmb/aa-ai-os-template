@@ -34,21 +34,28 @@ Every feature decision passes all six. If it fails any, it does not ship.
 6. **Private by default, promoted deliberately.** Private memory stays local. Shared knowledge is
    promoted to Notion only when it meets the promotion rules — summarized, structured, deduped.
 
-## The three layers
+## The four layers
 
 ```text
 ┌───────────────────────────────────────────────────┐
-│  Notion = shared company brain (canonical truth)  │
-│  - org knowledge, team knowledge, decisions       │
-│  - onboarding, packs, promotion rules             │
-│  - visible, editable, human-facing                │
+│  Notion canonical = human-authored truth          │
+│  - Operating Framework, Team directory, projects  │
+│  - slow, curated, edited by humans                │
+│  - AI reads; AI writes only to inbox sections     │
 └──────────────────────┬────────────────────────────┘
-                       │ MCP (read + conservative write)
+                       │
+┌──────────────────────┴────────────────────────────┐
+│  AI Memory (Notion) = shared knowledge graph      │
+│  - People, Projects, Decisions, Insights DBs      │
+│  - AI-owned, share-by-default w/ sensitivity gate │
+│  - continuous, structured, relational, queryable  │
+└──────────────────────┬────────────────────────────┘
+                       │ MCP (read + direct write on non-sensitive facts)
 ┌──────────────────────┴────────────────────────────┐
 │  Local assistant folder = personal runtime        │
-│  - identity, soul, user profile, memory           │
+│  - identity, soul, user profile, memory/          │
 │  - private notes, in-flight work                  │
-│  - the AI Contract lives here                     │
+│  - sensitivity log, brain cache                   │
 └──────────────────────┬────────────────────────────┘
                        │ loaded by
 ┌──────────────────────┴────────────────────────────┐
@@ -58,7 +65,9 @@ Every feature decision passes all six. If it fails any, it does not ship.
 └───────────────────────────────────────────────────┘
 ```
 
-Notion distributes. The folder runs. The assistant helps, remembers, and promotes.
+Canon is slow and human. AI Memory is fast and AI-maintained. Local is private.
+The assistant reads across all three and writes to the right layer per Contract
+rules (9 → canon inboxes, 14 → AI Memory DBs, 4 → local memory).
 
 ## Folder contract
 
@@ -94,20 +103,23 @@ alpha-assistant/
 
   packs/
     README.md                    how packs work, how to add/remove them
+    company-brain.md             shared AI Memory — People/Projects/Decisions/Insights (v1.3) ⭐
     company-writing.md           Alpha writing voice + structure (v1.1)
-    company-meetings.md          meeting prep + ingest (read.ai-ready, v1.1)
-    company-scheduling.md        1-1 + meeting scheduling via GCal MCP (v1.2)
+    company-meetings.md          meeting prep + ingest (read.ai-ready, v1.1; brain-writes in v1.3)
+    company-scheduling.md        1-1 + meeting scheduling via GCal MCP (v1.2; brain-writes in v1.3)
     team-<team>.md               team-level pack (optional install)
     personal-*.md                user can add their own
 
   memory/
     YYYY-MM-DD.md                daily notes (one per day)
-    decisions.md                 durable decisions with context
-    relationships.md             who's who: collaborators, clients, family
+    decisions.md                 durable decisions with context (local)
+    relationships.md             who's who: collaborators, clients, family (local)
     recurring-work.md            patterns the AI has noticed
     learnings.md                 things learned from outcomes
     onboarding-progress.md       mid-onboarding recovery state (new hires only)
     meetings/                    one file per meeting, structured header + raw notes
+    brain-cache/                 locally cached brain rows (TTL 1h) — v1.3
+    sensitivity-log.md           audit of ask-first decisions and forgets — v1.3
     templates/                   scaffolds the assistant fills in
 
   logs/
@@ -134,7 +146,7 @@ system work for non-technical people: every line shifts work from the user to th
 
 See `CONTRACT.md` (template below, in full form).
 
-### Contract summary (the thirteen rules)
+### Contract summary (the fourteen rules)
 
 1. **Identity and tone.** Greet by name. Plain English only. Never mention files, paths, JSON, MCP,
    schemas. Acknowledge captures in ≤5 words.
@@ -172,6 +184,12 @@ See `CONTRACT.md` (template below, in full form).
 12. **Failure modes.** Tool errors retry once, then surface plainly. Never silently lose data.
 13. **Non-goals.** Never teach folder structure unprompted. Never dump JSON. Never ask permission to
     remember things locally. Never batch onboarding questions. Never show semver unless asked.
+14. **AI Memory — share by default, with a sensitivity gate.** Write public-work facts directly to
+    the shared brain DBs (People, Projects, Decisions, Insights) under `packs/company-brain.md`. No
+    per-item consent. Dedupe before writing; update-in-place beats create. Ask only when content is
+    sensitive (negative feedback about colleagues, personal / health / compensation matters,
+    strategic doubt, drafts, explicit privacy markers, third-party PII). Provenance is mandatory and
+    immutable on every write.
 
 The full Contract text lives in `CONTRACT.md` (see template section below).
 
@@ -251,23 +269,34 @@ Alpha AI OS — V1                   (the hub, human-visible)
   ├── Get Your Assistant           download link + setup walkthrough
   ├── AI Contract                  canonical Contract text (synced from folder)
   ├── Folder Template              every file in the template, explained
-  │     ├── SOUL.md
-  │     ├── CONTRACT.md
-  │     ├── IDENTITY.md
-  │     ├── USER.md (template)
-  │     ├── TONE.md (template)
-  │     ├── WORKSTYLE.md (template)
-  │     ├── CURRENT.md (template)
-  │     ├── NOTION-SYNC.md
-  │     ├── PROMOTION-RULES.md
-  │     └── TOOLS.md
   ├── Tool Setup                   Claude Desktop / Cursor / Claude Code / Codex / openclaw
-  ├── Promotion Rules              what gets promoted, how, to which scope
+  ├── Promotion Rules              what gets promoted (Rule 9), how, to which scope
   ├── Onboarding Modules           company primer, role primers, team primers
   ├── Packs Library                optional capability packs
   ├── Governance & Versioning      how the template evolves, who owns what
-  └── Roadmap                      where it's going
+  ├── Roadmap                      where it's going
+  └── 🧠 AI Memory                  the shared AI-maintained knowledge graph (v1.3)
+        ├── 👤 People               DB — one row per person (Email as key)
+        ├── 🚀 Projects             DB — one row per active initiative
+        ├── ✅ Decisions            DB — one row per durable decision
+        ├── 💡 Insights             DB — cross-cutting observations, surface-count dedup
+        └── AI Memory — Privacy     the sensitivity heuristic + user controls
 ```
+
+### AI Memory databases (Contract §14)
+
+| DB | Purpose | Natural key | Key relations |
+|---|---|---|---|
+| **👤 People** | Who works at Alpha + AI-synthesized context | `Email` | target of Projects/Decisions/Insights relations |
+| **🚀 Projects** | Active initiatives, status, owner, blockers | normalized `Name` | `Owner`, `Contributors` → People |
+| **✅ Decisions** | Durable decisions w/ rationale; status transitions | `Title` + `Decided on` | `Owner`, `Participants` → People; `Related projects` → Projects |
+| **💡 Insights** | Cross-cutting observations, auto-incrementing surface count | fuzzy `Title` + tag overlap | `Related people/projects/decisions` |
+
+Every write carries: `Source users` (emails), `Source` type, `Confidence`,
+`Created` / `Last updated`. Provenance is immutable.
+
+Write rules live in `packs/company-brain.md`. The four DB URLs are hardcoded
+in `NOTION-SYNC.md`.
 
 Every page is human-editable by the person accountable for that knowledge. The assistant only
 writes to Notion under promotion rules.
@@ -394,16 +423,21 @@ host that the assistant reads and walks the user through in conversation.
 - Update mechanism end-to-end.
 - Setup conversation polished.
 - Notion hub complete with onboarding modules.
+- **v1.3.0 shipped:** AI Memory layer — People, Projects, Decisions, Insights
+  DBs + `company-brain.md` pack + Contract v1.2 (Rule 14: share-by-default
+  with sensitivity gate).
 
 ### v1.0 — Company rollout
 - Signed template releases on a public URL.
 - All teams have team packs.
 - Onboarding path: Notion "Get Your Assistant" → download → 5-minute setup → productive.
+- Weekly brain review cadence (Tomás + Ops partner) for dedup / conflict resolution.
 
 ### v1.x — Growable surface
 - Community packs.
 - Opt-in local semantic search.
-- Team-level shared memory (beyond Notion promotion).
+- Teams + Meetings + Open Questions brain DBs.
+- Brain-derived weekly owner digest (what's new about your projects / team).
 
 ## Design decisions (locked)
 

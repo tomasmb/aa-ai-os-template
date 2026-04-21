@@ -18,6 +18,24 @@
 | **Promotion Rules** (reference for Contract §9) | https://www.notion.so/3492901d790881b4bc7ffe7c08891da3 |
 | **Governance & Versioning** | https://www.notion.so/3492901d79088150aab3ebf136bb046e |
 
+## 🔒 AI Memory databases (Contract §14 — shared brain)
+
+Read + write under `packs/company-brain.md`. Natural keys per DB are enforced
+to prevent duplicates. Provenance is mandatory on every write.
+
+| Database | URL | Natural key | Primary relations |
+|---|---|---|---|
+| **👤 People** | https://www.notion.so/6b06c4411b9448beb21e14f4df69fa8b | `Email` | — (target of Projects.Owner, Decisions.Owner, Insights.Related people) |
+| **🚀 Projects** | https://www.notion.so/b23db3243d4146bf85e60ede57dca759 | normalized `Name` | `Owner` → People, `Contributors` → People |
+| **✅ Decisions** | https://www.notion.so/c19786631d3d41448dac8dc56b195604 | `Title` + `Decided on` | `Owner` / `Participants` → People, `Related projects` → Projects |
+| **💡 Insights** | https://www.notion.so/73815567aaa94aea90fb1d9678f80f14 | fuzzy `Title` + ≥2 tag overlap | `Related people` → People, `Related projects` → Projects, `Related decisions` → Decisions |
+
+**Parent page** (hub within the AI OS Notion): https://www.notion.so/3492901d790881adb05df812f2aa4131
+
+**Boot check:** verify all 4 DBs are reachable at session start. If any is
+missing, stop and walk the user through permissions (their Notion integration
+must have access to the `🧠 AI Memory` page). See `packs/company-brain.md`.
+
 ## Per-user pages (discovered at first run)
 
 These are resolved by looking the user up in Notion during setup.
@@ -39,7 +57,12 @@ These are resolved by looking the user up in Notion during setup.
 | Packs Library | Fetches pack content when the user asks to install one | On demand |
 | Active project pages | Reads for context; never writes canonically | Weekly (when user mentions a project) |
 
-## Write targets (where auto-promotes land as inbox entries)
+## Write targets (where auto-promotes land)
+
+**Two different write surfaces, two different rules.** See Contract §9 (canon
+inboxes) and §14 (AI Memory). Both can fire on a single observation.
+
+### Rule 9 — canonical pages (inbox-only)
 
 | Scope | Target page | Inbox section title |
 |---|---|---|
@@ -48,10 +71,17 @@ These are resolved by looking the user up in Notion during setup.
 | **Org** | org-wide policy / glossary / norms | `## Assistant Updates` |
 | **Onboarding Q&A** (new hires only) | user's onboarding card → `Onboarding Questions` sub-page | Appended to the sub-page body |
 
-**Rule:** the assistant NEVER auto-writes outside the `## Assistant Updates`
-section (or, for new-hire Q&A, the `Onboarding Questions` sub-page — which is
-a pre-authorized exception under Contract §9, because the pattern is well-
-established). Creating any other new Notion page requires explicit user consent.
+**Rule 9 rule:** NEVER auto-write outside `## Assistant Updates` or the
+`Onboarding Questions` sub-page (a pre-authorized exception). Creating any
+other new Notion page outside the AI Memory DBs requires explicit consent.
+
+### Rule 14 — AI Memory databases (structured, direct writes)
+
+See the "AI Memory databases" table above. The assistant writes rows
+directly (share-by-default) after the sensitivity gate passes. Rows in the
+AI Memory DBs are the one class of "new Notion content" that the assistant
+may create without per-item consent, because the user consented to the
+entire brain model at setup time.
 
 ## Update manifest (for self-updates)
 

@@ -142,12 +142,18 @@ On confirmation:
 1. Create each event via Google Calendar MCP.
 2. Append each attendee to `memory/relationships.md` with a tag:
    `scheduled_intro: <YYYY-MM-DD>`.
-3. Append a summary to today's daily note:
+3. **Write to the brain (Rule 14, via `packs/company-brain.md`):** for each
+   attendee, find or create their `👤 People` row (key: Email). Update
+   `Notes` with a one-liner like *"had intro 1-1 scheduled by <user> on
+   <date>"*. Confidence = medium (raised to high after the 1-1 actually
+   happens + the user confirms context). Source = `conversation`. This is
+   not sensitive content (scheduling is public work), so no gate fires.
+4. Append a summary to today's daily note:
    > *Scheduled 4 intro 1-1s: Ana (Mon), Ben (Tue), Carla (Wed), Dan (Thu).*
-4. If this was triggered from the new-hire checklist, **mark the checklist
+5. If this was triggered from the new-hire checklist, **mark the checklist
    item done in the user's onboarding card** (same mechanism as
    `new-hire-flow.md` Step 3).
-5. Set a reminder in `memory/recurring-work.md`:
+6. Set a reminder in `memory/recurring-work.md`:
    *"2 days after each 1-1, ask the user how it went + prep a follow-up
    note for `memory/meetings/`."*
 

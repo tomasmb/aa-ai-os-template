@@ -1,30 +1,38 @@
 {
   "$schema": "https://raw.githubusercontent.com/tomasmb/aa-ai-os-template/main/docs/manifest.schema.json",
   "name": "alpha-assistant",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "released_at": "2026-04-21",
   "channel": "stable",
   "changelog": [
-    "Your assistant can now schedule 1-1 meetings for you — connect Google Calendar once and say 'schedule intro 1-1s with my team'",
-    "New hires get scheduling done with them, not just reminded — the onboarding checklist item becomes a 5-minute conversation",
-    "No new setup required for existing users — upgrade keeps everything as-is"
+    "Your assistant now writes to a shared brain — every employee's insights, decisions, and project updates land in a structured knowledge graph in Notion, so you learn from every conversation your colleagues have",
+    "Ask 'who owns X?' or 'what did we decide about Y?' and the assistant checks the shared brain first — no more hunting across pages",
+    "Personal stuff stays personal — the assistant asks before sharing anything sensitive (feedback about colleagues, health, compensation, strategic doubt). Everything else shares freely.",
+    "No setup required — existing assistants pick it up after /update"
   ],
   "changelog_semver": [
-    "Added packs/company-scheduling.md — Google Calendar-based 1-1 scheduling using Notion Team directory for attendees and USER.md / WORKSTYLE.md for constraints",
-    "TOOLS.md: Google Calendar MCP documented with per-host setup (Claude Desktop, Cursor, Claude Code, Codex CLI, openclaw) and minimal OAuth scopes (freebusy + events only)",
-    "onboarding/new-hire-flow.md: introduced pack-delegation table so checklist items that can be actively executed (scheduling today, more later) get offered instead of just reminded",
-    "packs/README.md + docs/SPEC.md: scheduling pack added to default shipping set; MCP requirement matrix added"
+    "Added packs/company-brain.md — read/write layer for the four AI Memory Notion databases (People, Projects, Decisions, Insights). Implements share-by-default with sensitivity gate, dedup by natural key, provenance on every write.",
+    "Created 4 Notion databases under new '🧠 AI Memory' hub page: People (key: Email), Projects (key: normalized Name), Decisions (key: Title + Decided on), Insights (fuzzy title + tag overlap, Surface count auto-increment on match)",
+    "CONTRACT.md bumped to v1.2 — added Rule 14 (AI Memory share-by-default with 8-category sensitivity heuristic). Rule count 13 → 14. Rule 13 non-goals updated: new-Notion-page ban now carves out AI Memory DB rows.",
+    "Extended packs/company-meetings.md — post-meeting ingest now writes Decisions / Insights rows + upserts People for attendees, in parallel with the Rule 9 canon inbox writes",
+    "Extended packs/company-scheduling.md — successful 1-1 scheduling updates the attendee's People row with scheduled_intro context",
+    "onboarding/setup-questionnaire.md: new Block 8 seeds the user's own People row silently on first run; new hires additionally seed Projects rows from their onboarding card",
+    "NOTION-SYNC.md: hardcoded URLs for all 4 AI Memory DBs + parent page; write-targets table split into Rule 9 vs. Rule 14 surfaces",
+    "packs/README.md: company-brain added as foundational pack; MCP requirement matrix updated",
+    "SOUL.md: codified 'two memories, one being' — local + shared brain, read from both, write per Rule 14",
+    "docs/SPEC.md: three-layer → four-layer architecture diagram; Notion structure tree includes AI Memory sub-tree; Contract summary updated to 14 rules",
+    "Added memory/brain-cache/ (local cache of queried brain rows, TTL 1h) and memory/sensitivity-log.md (audit log of ask-first decisions + forgets)"
   ],
   "download": {
-    "url": "https://github.com/tomasmb/aa-ai-os-template/releases/download/v1.2.0/alpha-assistant-v1.2.0.zip",
-    "latest_url": "https://github.com/tomasmb/aa-ai-os-template/releases/latest/download/alpha-assistant-v1.2.0.zip",
+    "url": "https://github.com/tomasmb/aa-ai-os-template/releases/download/v1.3.0/alpha-assistant-v1.3.0.zip",
+    "latest_url": "https://github.com/tomasmb/aa-ai-os-template/releases/latest/download/alpha-assistant-v1.3.0.zip",
     "sha256": "",
     "size_bytes": 0,
     "_note": "sha256 + size are populated in the release-attached copy of this manifest. The in-repo copy intentionally omits them because its own hash would be a self-reference. Assistants read the remote manifest via manifest_url to get the live numbers."
   },
   "manifest_url": "https://github.com/tomasmb/aa-ai-os-template/releases/latest/download/manifest.json",
   "repository": "https://github.com/tomasmb/aa-ai-os-template",
-  "release_notes_url": "https://github.com/tomasmb/aa-ai-os-template/releases/tag/v1.2.0",
+  "release_notes_url": "https://github.com/tomasmb/aa-ai-os-template/releases/tag/v1.3.0",
   "minimum_previous_version": "1.0.0",
   "migrations": [],
   "protected_files": [

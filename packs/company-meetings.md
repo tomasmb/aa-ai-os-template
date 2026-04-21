@@ -46,17 +46,39 @@ When user pastes a transcript / read.ai summary / notes:
      `memory/relationships.md`.
    - Action items owned by the user → append to today's daily note.
    - New facts/norms → `memory/learnings.md`.
-4. **Auto-promote to Notion** (Contract §9) the qualifying items:
+4. **Write structured rows to the AI Memory brain** (Contract §14, via
+   `packs/company-brain.md`):
+   - Each **Decision made** → upsert a `✅ Decisions` row. Title = the
+     decision statement. `Decided on` = meeting date. `Owner` = person who
+     made the call (relation to `👤 People`). `Participants` = attendees.
+     `Rationale` = the reasoning as captured. `Outcome` = the decision
+     itself. `Source` = `meeting`. `Status` = `Active`. Confidence = high
+     if explicit, medium if inferred. Dedup by Title + Decided on.
+   - Each attendee the assistant doesn't already know → upsert `👤 People`
+     row with whatever context the transcript reveals (role mentions,
+     expertise, views). Never write sensitive content about an attendee.
+   - Each cross-cutting observation (*"onboarding's slow because X"*,
+     *"customers keep asking for Y"*) → upsert `💡 Insights` row. If a
+     fuzzy match exists, increment `Surface count`. Tag appropriately.
+   - Each project referenced with state change (*"Project X is now
+     blocked on Y"*) → update `🚀 Projects.Status` + `Blockers`.
+5. **Auto-promote to Notion canonical pages** (Contract §9) the qualifying
+   items:
    - If a decision affects a project → promote summary to that project page's
-     `## Assistant Updates` inbox.
+     `## Assistant Updates` inbox (Rule 9), AND write the structured row to
+     `✅ Decisions` (Rule 14). Both fire on one event.
    - If an action item is owed to another Alpha employee → promote to their
      team page's `## Assistant Updates` inbox, tagged with their name.
    - If a question is company-wide → promote to the Operating Framework
      page's `## Assistant Updates`.
    - Skip any item the user marks *"keep local"* / *"don't share"*.
-5. **Confirm in one sentence:** *"Got the <topic> meeting. 3 decisions, 2
-   action items for you, 1 for <person>. Promoted 2 items to <project>
-   inbox."*
+6. **Run the sensitivity gate** on anything involving interpersonal
+   feedback, compensation, strategic doubt, or explicit privacy markers
+   from the meeting. Gated items never write to brain or canon; they land
+   in `memory/meetings/` with a `[LOCAL ONLY]` tag.
+7. **Confirm in one sentence:** *"Got the <topic> meeting. 3 decisions, 2
+   action items for you, 1 for <person>. Brain: 3 Decisions + 1 Insight.
+   Canon: 2 inbox entries on <project>."*
 
 ## Auto-ingest from read.ai (future-ready design)
 

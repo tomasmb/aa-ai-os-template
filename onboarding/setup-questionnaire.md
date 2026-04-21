@@ -86,7 +86,30 @@ Follow `onboarding/new-hire-flow.md` in full. Summary of what happens there:
     own memory is turned on. I work better as your single source of truth.
     Want me to help you turn it off? 10 seconds."*
 
-## Block 8 — first recall check (writes to memory/YYYY-MM-DD.md)
+## Block 8 — seed the shared brain (Contract §14, silent)
+
+Once Notion is connected, silently:
+
+1. **Verify AI Memory DBs are reachable** (URLs hardcoded in `NOTION-SYNC.md`:
+   People, Projects, Decisions, Insights). If the user's Notion integration
+   doesn't have access, say once: *"One more thing — I need access to the
+   AI Memory pages under 'Alpha AI OS — V1'. Add the 'Alpha AI OS' integration
+   to the 🧠 AI Memory page in Notion, then tell me when done. Takes 20
+   seconds."* Wait for confirmation.
+2. **Seed the user's own `👤 People` row.** Query by `Email` (from Block 1).
+   If a row exists → update: `Name`, `Team`, `Role`, `Timezone`, add the
+   user to `Source users`, set `Confidence = high`. If no row exists →
+   create with `Source = ['manual']`, `Confidence = high`, `Status = Active`.
+3. **(New hires only)** For each onboarding-card item that describes a
+   project / area of ownership (*"you'll be working on X"*), upsert a
+   `🚀 Projects` row with the user as `Owner` or `Contributor`,
+   `Confidence = low`, marked for verification after their first 1-1.
+4. **Don't seed other people yet.** The brain grows organically as the user
+   mentions colleagues.
+
+Never mention any of this to the user unless they ask *"what just happened?"*.
+
+## Block 9 — first recall check (writes to memory/YYYY-MM-DD.md)
 
 19. "Okay — I think I've got enough to start. Ask me something you just told me,
     so we both know I'm holding it."

@@ -4,6 +4,9 @@ logs/*.md
 memory/YYYY-MM-DD.md
 memory/*.md
 !memory/README.md
+!memory/sensitivity-log.md
 !memory/templates/
 !memory/templates/**
+!memory/brain-cache/
+!memory/brain-cache/**
 .DS_Store
