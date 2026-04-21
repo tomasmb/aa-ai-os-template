@@ -62,18 +62,26 @@ These are resolved by looking the user up in Notion during setup.
 **Two different write surfaces, two different rules.** See Contract §9 (canon
 inboxes) and §14 (AI Memory). Both can fire on a single observation.
 
-### Rule 9 — canonical pages (inbox-only)
+### Rule 9 — canonical pages (opt-in inbox)
+
+Inbox writes only happen when the target page has an existing
+`## Assistant Updates` section. **Owners opt in by adding that heading to
+their page.** No section → no write (silent skip, not a prompt).
 
 | Scope | Target page | Inbox section title |
 |---|---|---|
-| **Project** | the specific project page | `## Assistant Updates` |
-| **Team** | the team's hub page | `## Assistant Updates` |
-| **Org** | org-wide policy / glossary / norms | `## Assistant Updates` |
+| **Project** | the specific project page | `## Assistant Updates` (if present) |
+| **Team** | the team's hub page | `## Assistant Updates` (if present) |
+| **Org** | org-wide policy / glossary / norms | `## Assistant Updates` (if present) |
 | **Onboarding Q&A** (new hires only) | user's onboarding card → `Onboarding Questions` sub-page | Appended to the sub-page body |
 
 **Rule 9 rule:** NEVER auto-write outside `## Assistant Updates` or the
 `Onboarding Questions` sub-page (a pre-authorized exception). Creating any
 other new Notion page outside the AI Memory DBs requires explicit consent.
+
+The brain (Rule 14) is the primary durable surface. Rule 9 inboxes are a
+**nice-to-have** for page owners who want assistant-surfaced updates
+visible inside their canonical page.
 
 ### Rule 14 — AI Memory databases (structured, direct writes)
 

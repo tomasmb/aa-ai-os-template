@@ -17,9 +17,9 @@ If the two disagree, the repo wins. Edit spec → open PR → merge → update N
 1. **Pending promotions audit.** Open the Notion hub. For each active page with an
    `## Assistant Updates` section, scan the inbox. Flag stale items (>14 days) to the
    page owner. Drafts a consolidation on request.
-2. **Error queue.** Grep pilot users' `logs/pending-writes.md` (or sampled Slack
-   reports). Look for: repeated Notion failures, `CONTRACT.md` rule misses, confused
-   onboarding. Turn patterns into backlog items.
+2. **Error queue.** Grep pilot users' `logs/pending-writes.md` (or sampled
+   email feedback). Look for: repeated Notion failures, `CONTRACT.md` rule
+   misses, confused onboarding. Turn patterns into backlog items.
 3. **Template drift.** `git log --since "1 week ago"` on the repo. If anything
    shipped, verify the corresponding Notion page was updated too.
 4. **Pilot feedback.** Read the pilot channel / DMs. One concrete improvement per
@@ -62,16 +62,19 @@ Before telling employees at large, these must be true:
       *Shipped in v1.1.0.*
 - [x] `packs/company-writing.md` and `packs/company-meetings.md` exist.
       *Shipped in v1.1.0. Meetings pack is read.ai-ready.*
-- [ ] **Every page the assistant writes to has an `## Assistant Updates` section.**
-      At minimum: the hub, Operating Framework, each top-level Team page.
-      *Tracked in the roadmap page; owner: Tomás / each team lead.*
-- [ ] **Owner-digest channel is live** (Slack DM or email — weekly consolidation
-      of what landed in each page's inbox).
+- [x] **Proactive rituals live.** Morning check-in, EOD wrap, weekly review
+      + email owner digest (Contract §15). *Shipped in v1.4.0.*
+- [ ] **Opt-in `## Assistant Updates` sections on the pages owners want them.**
+      **No longer mandatory** after v1.4 — Rule 9 softened to silent-skip when
+      the section isn't present; the brain (Rule 14) is the primary durable
+      surface. Target at least a few high-traffic pages (hub, Operating
+      Framework, 2–3 active project pages) so the promotion behavior gets
+      exercised in the pilot.
 - [ ] **3 non-maintainer pilot users** ran the full onboarding + used it for a
-      week with no major complaints.
+      week (including rituals enabled) with no major complaints.
 
-Items 1–4 are **done**. Items 5–7 are the remaining gates before company-wide
-rollout.
+Items 1–4 and rituals are **done**. The remaining gates before company-wide
+rollout are: a handful of opt-in inbox sections + the 3-user pilot.
 
 ## How to add `## Assistant Updates` sections at scale
 

@@ -1,10 +1,13 @@
 .backups/
 logs/*.md
+logs/*.log
+logs/.smtp-credentials.env
 !logs/.gitkeep
 memory/YYYY-MM-DD.md
 memory/*.md
 !memory/README.md
 !memory/sensitivity-log.md
+!memory/rituals-log.md
 !memory/templates/
 !memory/templates/**
 !memory/brain-cache/

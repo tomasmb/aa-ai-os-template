@@ -86,6 +86,36 @@ Follow `onboarding/new-hire-flow.md` in full. Summary of what happens there:
     own memory is turned on. I work better as your single source of truth.
     Want me to help you turn it off? 10 seconds."*
 
+## Block 7.5 — proactive rituals (Contract §15, writes to WORKSTYLE.md)
+
+> The rituals layer is what turns this from a tool into a colleague. Keep
+> the ask light — three short questions, one setup step, done.
+
+19. *"I can check in with you each morning so you start the day oriented —
+    surface what's on your plate, offer to draft the one thing that
+    matters. What time works? I'd suggest 9:00 right after you start."*
+    → `rituals.morning_time` (default `09:00`)
+20. *"And a quick wrap at end of day — catch what's hanging, tee up
+    tomorrow. 5:00 pm your time?"* → `rituals.eod_time` (default `17:00`)
+21. *"Friday afternoons I'll compile a weekly digest of what you own and
+    email it to you. 3:00 pm Friday sound right?"*
+    → `rituals.weekly_time` (default `Fri 15:00`)
+
+Once answered, **generate and install the host-specific scheduler config**
+from `rituals/README.md`:
+
+- macOS → `rituals/launchd/*.plist.template` → `~/Library/LaunchAgents/` +
+  `launchctl load ...`
+- Linux → `rituals/cron/crontab.template` → `crontab` append
+- Windows → `rituals/windows/install-rituals.ps1.template` → run once
+- Claude Desktop → create three Scheduled Tasks via Claude's UI; walk the
+  user through it in plain English, one task at a time
+- Cursor + anything without scheduling → **skip setup**, note that rituals
+  will fire on next session open past the scheduled time (graceful fallback)
+
+Confirm in one sentence: *"All set — I'll check in with you tomorrow at
+9:00. Keep working."*
+
 ## Block 8 — seed the shared brain (Contract §14, silent)
 
 Once Notion is connected, silently:

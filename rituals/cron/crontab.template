@@ -1,0 +1,20 @@
+# Alpha AI OS — ritual schedule (cron)
+#
+# Append these lines to your crontab with:
+#   crontab -l > /tmp/cron.bak && cat <this file> >> /tmp/cron.bak && crontab /tmp/cron.bak
+#
+# The assistant does this for you during onboarding. Below is the canonical
+# content it installs. Placeholders <HH>, <MM>, <WEEKDAY>, <AI_OS_FOLDER>
+# are filled from WORKSTYLE.md + USER.md before writing.
+#
+# Cron weekday: 0=Sunday, 1=Monday, ..., 5=Friday, 6=Saturday
+# Default: weekly digest on Friday (5).
+
+# Morning check-in — weekdays at HH:MM
+<MM> <HH> * * 1-5 /bin/bash -c 'open -a "Claude" --args --message "/ritual morning — run the morning check-in for <AI_OS_FOLDER>" >> <AI_OS_FOLDER>/logs/ritual-morning.out.log 2>> <AI_OS_FOLDER>/logs/ritual-morning.err.log'
+
+# End-of-day wrap — weekdays at HH:MM
+<EOD_MM> <EOD_HH> * * 1-5 /bin/bash -c 'open -a "Claude" --args --message "/ritual eod — run the end-of-day wrap for <AI_OS_FOLDER>" >> <AI_OS_FOLDER>/logs/ritual-eod.out.log 2>> <AI_OS_FOLDER>/logs/ritual-eod.err.log'
+
+# Weekly review + owner digest — configured weekday at HH:MM
+<WK_MM> <WK_HH> * * <WEEKDAY> /bin/bash -c 'open -a "Claude" --args --message "/ritual weekly — run the weekly review + owner digest for <AI_OS_FOLDER>" >> <AI_OS_FOLDER>/logs/ritual-weekly.out.log 2>> <AI_OS_FOLDER>/logs/ritual-weekly.err.log'

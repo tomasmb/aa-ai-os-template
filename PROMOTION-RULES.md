@@ -60,8 +60,9 @@ bullet of this shape:
 
 ## What owners see (weekly consolidation rhythm)
 
-Page owners receive a weekly digest (Slack DM or equivalent) listing pending
-`Assistant Updates` items on pages they own. They decide when to consolidate
+Page owners receive a weekly email digest (see `digests/email-weekly.md` and
+Contract §15) listing pending `Assistant Updates` items on pages they own,
+plus brain rows where they're `Owner`. They decide when to consolidate
 inbox → canonical. The assistant helps on demand:
 
 > *"The Product Team page has 6 pending updates from 3 assistants this month —

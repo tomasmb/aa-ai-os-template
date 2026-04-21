@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.alpha.assistant.eod</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>-c</string>
+        <string>open -a "Claude" --args --message "/ritual eod — run the end-of-day wrap for <AI_OS_FOLDER>"</string>
+    </array>
+
+    <key>StartCalendarInterval</key>
+    <array>
+        <dict><key>Weekday</key><integer>1</integer><key>Hour</key><integer><HH></integer><key>Minute</key><integer><MM></integer></dict>
+        <dict><key>Weekday</key><integer>2</integer><key>Hour</key><integer><HH></integer><key>Minute</key><integer><MM></integer></dict>
+        <dict><key>Weekday</key><integer>3</integer><key>Hour</key><integer><HH></integer><key>Minute</key><integer><MM></integer></dict>
+        <dict><key>Weekday</key><integer>4</integer><key>Hour</key><integer><HH></integer><key>Minute</key><integer><MM></integer></dict>
+        <dict><key>Weekday</key><integer>5</integer><key>Hour</key><integer><HH></integer><key>Minute</key><integer><MM></integer></dict>
+    </array>
+
+    <key>StandardOutPath</key>
+    <string><AI_OS_FOLDER>/logs/ritual-eod.out.log</string>
+    <key>StandardErrorPath</key>
+    <string><AI_OS_FOLDER>/logs/ritual-eod.err.log</string>
+
+    <key>RunAtLoad</key>
+    <false/>
+</dict>
+</plist>

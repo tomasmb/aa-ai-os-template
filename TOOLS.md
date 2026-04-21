@@ -15,9 +15,20 @@
   recommended for new hires (day-1 scheduling is the highest-leverage use case).
 - **Google Mail MCP** (optional) — enables richer invite bodies + follow-up
   detection. Not required; the scheduling pack works with Calendar-only.
-- **Slack MCP** — for posting owner digests and team notifications.
 - **GitHub MCP** — for linking PRs into memory (useful for engineers).
 - **Linear / Jira MCP** — for project state (useful for PMs).
+
+## Not required — email digest uses the user's default client
+
+The weekly owner digest (Contract §15 / `packs/company-rituals.md`) is
+**email-only** and requires **no MCP**. The assistant composes the digest
+locally, opens a pre-filled `mailto:` link in the user's default mail
+client, and the user hits send. Power users can opt into SMTP via
+`digests.smtp_enabled` in `WORKSTYLE.md` — still no MCP, just local SMTP.
+
+**Google Chat MCP, Slack MCP, Teams MCP are not used by v1.** The folder
+stays lean on required tools. If Alpha later builds a Google Chat digest
+path, it lands as an opt-in pack extension — never a requirement.
 
 ## Notion MCP setup by host
 
@@ -113,6 +124,27 @@ Only these — nothing else is needed:
 
 **Not requested:** reading event contents (titles, descriptions, attendees of
 other people's events). Free/busy is enough.
+
+## Ritual scheduling by host (Contract §15)
+
+See `rituals/README.md` for full setup. Summary:
+
+| Host | Native scheduling | Fallback |
+|---|---|---|
+| Claude Desktop | Scheduled Tasks (native) | Session-open trigger |
+| Cursor | — | Session-open trigger only |
+| Claude Code | OS (launchd / cron / Task Scheduler) | Session-open trigger |
+| Codex CLI | OS (launchd / cron / Task Scheduler) | Session-open trigger |
+| openclaw | OS (launchd / cron / Task Scheduler) | Session-open trigger |
+
+Setup runs once, during onboarding Block 7.5. The assistant generates the
+config from `rituals/launchd/*.template`, `rituals/cron/*.template`, or
+`rituals/windows/*.template` and installs it with the user's one-word
+confirmation. No admin rights required.
+
+**Graceful fallback:** even without a scheduler, rituals fire on the next
+session open past their configured time. Users who skip setup still get
+rituals; latency is just slightly worse.
 
 ## Host memory — turn it OFF
 

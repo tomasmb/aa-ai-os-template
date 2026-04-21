@@ -104,11 +104,21 @@ alpha-assistant/
   packs/
     README.md                    how packs work, how to add/remove them
     company-brain.md             shared AI Memory — People/Projects/Decisions/Insights (v1.3) ⭐
+    company-rituals.md           morning / EOD / weekly rituals + email digest (v1.4) ⭐
     company-writing.md           Alpha writing voice + structure (v1.1)
     company-meetings.md          meeting prep + ingest (read.ai-ready, v1.1; brain-writes in v1.3)
     company-scheduling.md        1-1 + meeting scheduling via GCal MCP (v1.2; brain-writes in v1.3)
     team-<team>.md               team-level pack (optional install)
     personal-*.md                user can add their own
+
+  rituals/                       per-host scheduler setup for Contract §15 (v1.4)
+    README.md                    host support matrix + graceful-fallback notes
+    launchd/                     macOS user agents (.plist templates)
+    cron/                        Linux cron entries
+    windows/                     Windows Task Scheduler (PowerShell)
+
+  digests/                       assistant-generated email digests (v1.4)
+    email-weekly.md              weekly owner digest template
 
   memory/
     YYYY-MM-DD.md                daily notes (one per day)
@@ -120,11 +130,13 @@ alpha-assistant/
     meetings/                    one file per meeting, structured header + raw notes
     brain-cache/                 locally cached brain rows (TTL 1h) — v1.3
     sensitivity-log.md           audit of ask-first decisions and forgets — v1.3
+    rituals-log.md               audit of ritual fires + engagement — v1.4
     templates/                   scaffolds the assistant fills in
 
   logs/
     session-log.md               append-only session summaries
     pending-writes.md            queue for captures that couldn't reach Notion
+    ritual-*.log                 stdout/stderr from scheduled ritual triggers (v1.4)
 
   manifest.json                  update manifest (version, sha256, changelog)
   .version                       folder-standard version for update/migration
@@ -146,7 +158,7 @@ system work for non-technical people: every line shifts work from the user to th
 
 See `CONTRACT.md` (template below, in full form).
 
-### Contract summary (the fourteen rules)
+### Contract summary (the fifteen rules)
 
 1. **Identity and tone.** Greet by name. Plain English only. Never mention files, paths, JSON, MCP,
    schemas. Acknowledge captures in ≤5 words.
@@ -171,11 +183,11 @@ See `CONTRACT.md` (template below, in full form).
    consent.
 8. **Update execution.** Back up → fetch new release from GitHub → verify sha256 → migrate →
    reload. Rollback on any failure. Report in plain English.
-9. **Auto-promote to Notion.** When user says something that qualifies under Promotion Rules,
-   write it to Notion without asking — but only into the target page's "Assistant Updates" inbox
-   section, never directly into canonical content. Always summarize. Always dedupe against nearby
-   existing entries (update, don't duplicate). Creating a new Notion page still requires explicit
-   consent; appending to an existing page does not.
+9. **Auto-promote to canonical Notion pages (opt-in inbox).** Qualifying statements write silently
+   to the target page's `## Assistant Updates` inbox section — **but only if that section exists**.
+   Pages without the section are skipped silently; owners opt in by adding the heading. Brain
+   (Rule 14) is the primary durable surface. Always summarize + dedupe. Creating a new Notion page
+   outside AI Memory DBs still requires explicit consent.
 10. **Privacy.** Never transmit workspace contents except through user's explicit action or an
     auto-promote that matches Rule 9. On "what do you know about me?", dump a plain-English
     summary, not raw files.
@@ -190,6 +202,13 @@ See `CONTRACT.md` (template below, in full form).
     sensitive (negative feedback about colleagues, personal / health / compensation matters,
     strategic doubt, drafts, explicit privacy markers, third-party PII). Provenance is mandatory and
     immutable on every write.
+15. **Proactive rituals.** Three rituals run on schedule (morning check-in, end-of-day wrap, weekly
+    review + email owner digest — see `packs/company-rituals.md`). Each ritual is concise,
+    actionable, and ends with a concrete offer to help. Scheduling is per-host (launchd / cron /
+    Task Scheduler / Claude Scheduled Tasks); hosts without a scheduler get graceful fallback
+    (ritual fires on next session open past its scheduled time). Weekly digest is email-only via
+    the user's default mail client (no MCP required). Sensitive content never appears in rituals or
+    digests.
 
 The full Contract text lives in `CONTRACT.md` (see template section below).
 
@@ -335,8 +354,11 @@ writes to Notion under promotion rules.
 - **Creating a new Notion page requires explicit consent.** Appending to existing pages does not.
 - **Use the promotion format** in `PROMOTION-RULES.md`: title, decision, context, who, next step,
   auto-tag with "promoted by <user>'s assistant on <date>".
-- **Owner notification** — weekly Slack digest (or equivalent) to each page owner listing pending
-  assistant updates on their pages. Never a modal, never a per-item ping.
+- **Owner notification** — weekly email digest (template in
+  `digests/email-weekly.md`, triggered by Contract §15 / `packs/company-rituals.md`) to each page
+  owner listing pending assistant updates on their pages plus brain rows they own. Never a modal,
+  never a per-item ping. No Slack or external service: the digest is composed locally and sent via
+  the user's default mail client.
 
 ## Update & versioning mechanism
 
@@ -453,7 +475,7 @@ host that the assistant reads and walks the user through in conversation.
 
 ## Open questions
 
-- Exact Slack/email digest channel for page-owner notifications on inbox promotes. Pick tool + cadence before v0.2.
+- ~~Exact Slack/email digest channel for page-owner notifications~~ — **resolved in v1.4: email only, via user's default mail client (see `digests/email-weekly.md`).**
 - Threshold for "semantic match" dedupe — heuristic rules in V1, embeddings opt-in in V2?
 - When (if ever) does a mature assistant earn the right to auto-promote directly into canonical
   sections, skipping the inbox?

@@ -1,0 +1,47 @@
+# Alpha AI OS — ritual installer (Windows Task Scheduler)
+#
+# Registers three scheduled tasks under "\AlphaAssistant\":
+#   morning  — weekdays at HH:MM
+#   eod      — weekdays at HH:MM
+#   weekly   — Fridays at HH:MM
+#
+# The assistant writes and runs this for you during onboarding. Placeholders
+# <HH>, <MM>, <EOD_HH>, <EOD_MM>, <WK_HH>, <WK_MM>, <WEEKDAY>, <AI_OS_FOLDER>
+# are filled from WORKSTYLE.md + USER.md before execution.
+#
+# Run as the logged-in user (no admin required for user-scope tasks):
+#   powershell -ExecutionPolicy Bypass -File install-rituals.ps1
+
+$AIOSFolder = "<AI_OS_FOLDER>"
+$Tool       = "C:\Program Files\Claude\Claude.exe"   # adjust per-host
+
+function Register-RitualTask {
+    param(
+        [string]$Name,
+        [string]$Tag,
+        [string]$Time,
+        [string[]]$Days
+    )
+    $action   = New-ScheduledTaskAction -Execute $Tool `
+                -Argument "--message `"/ritual $Tag — run for $AIOSFolder`""
+    $trigger  = New-ScheduledTaskTrigger -Weekly -DaysOfWeek $Days -At $Time
+    $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries `
+                -DontStopIfGoingOnBatteries -StartWhenAvailable
+    Register-ScheduledTask -TaskName "\AlphaAssistant\$Name" `
+                           -Action $action -Trigger $trigger `
+                           -Settings $settings -Force | Out-Null
+    Write-Host "Registered: \AlphaAssistant\$Name"
+}
+
+Register-RitualTask -Name "morning" -Tag "morning" `
+    -Time "<HH>:<MM>" -Days @('Monday','Tuesday','Wednesday','Thursday','Friday')
+
+Register-RitualTask -Name "eod" -Tag "eod" `
+    -Time "<EOD_HH>:<EOD_MM>" -Days @('Monday','Tuesday','Wednesday','Thursday','Friday')
+
+Register-RitualTask -Name "weekly" -Tag "weekly" `
+    -Time "<WK_HH>:<WK_MM>" -Days @('<WEEKDAY>')
+
+Write-Host ""
+Write-Host "Done. Three ritual tasks registered under Task Scheduler \AlphaAssistant\."
+Write-Host "Open Task Scheduler to verify or adjust."

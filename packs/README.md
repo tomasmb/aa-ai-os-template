@@ -30,6 +30,10 @@ from Notion and writes it here.
   by-default writes to Notion's People / Projects / Decisions / Insights
   databases. Every other pack that surfaces facts routes through here.
   **Ships by default. Foundational.**
+- `company-rituals.md` — **the proactive rhythm** (Contract §15). Morning
+  check-in, end-of-day wrap, weekly review + email owner digest. Turns the
+  assistant from a tool you open into a colleague who comes to you. **Ships
+  by default. Foundational.**
 - `company-writing.md` — Alpha's writing voice + structure. **Ships by default.**
 - `company-meetings.md` — meeting prep + post-meeting ingest (read.ai-ready).
   Writes Decisions + Insights to the brain. **Ships by default.**
@@ -45,6 +49,7 @@ from Notion and writes it here.
 | Pack | Extra MCP needed | Behavior if MCP missing |
 |---|---|---|
 | `company-brain.md` | Notion MCP (required) + access to `🧠 AI Memory` page | Stop + walk user through granting Notion access to the AI Memory hub. |
+| `company-rituals.md` | None (scheduling uses OS-level schedulers / host native tasks; email uses user's default mail client via `mailto:`) | Graceful fallback: rituals fire on next session open past their scheduled time. |
 | `company-writing.md` | None | Works out of the box. |
 | `company-meetings.md` | None (paste-based today); optional read.ai / Gmail later | Works on pasted meeting notes. Writes to brain if brain access is healthy. |
 | `company-scheduling.md` | **Google Calendar MCP** | Assistant offers to set it up the first time the user triggers the pack. |
