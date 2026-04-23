@@ -1,16 +1,19 @@
 # Maintainer playbook — Alpha AI OS
 
 > For whoever owns the template, the Notion hub, and the release cadence.
-> Today that's Tomás. As the system matures, delegate areas from the Ownership
-> table in [7 — Governance & Versioning](https://www.notion.so/3492901d79088150aab3ebf136bb046e).
+> Today that's Tomás. As the system matures, delegate areas from the
+> Ownership table in this file's "Ownership" section (below).
 
 ## Canonical sources
 
-- **Git repo** (maintainer truth): [`tomasmb/aa-ai-os-template`](https://github.com/tomasmb/aa-ai-os-template)
-- **Notion hub** (user truth): `Alpha AI OS — V1`
+- **Git repo** (maintainer + user truth — folder ships from here):
+  [`tomasmb/aa-ai-os-template`](https://github.com/tomasmb/aa-ai-os-template)
+- **Notion hub** (front door only): `Alpha AI OS — V1` — download link + the
+  🧠 AI Memory databases. Nothing else.
 - **Spec:** [`docs/SPEC.md`](./SPEC.md) in this repo
 
-If the two disagree, the repo wins. Edit spec → open PR → merge → update Notion to match.
+The repo is the single source of truth for the product. The Notion hub only
+surfaces the download and hosts the shared brain databases.
 
 ## Weekly review (60–90 minutes, ideally same slot every week)
 
@@ -44,7 +47,7 @@ For every release:
    rm -rf alpha-assistant
    shasum -a 256 alpha-assistant-v<x.y.z>.zip
    ```
-5. Update the download callout on the Notion "Get Your Assistant" page: URL
+5. Update the download callout on the Alpha AI OS Notion hub page: URL
    (always latest/download/... is stable) + new sha256 + plain-English changelog.
 6. Announce in the pilot channel with the plain-English changelog only
    (no semver in the announcement — Rule 3 applies to humans too).
@@ -56,8 +59,8 @@ Before telling employees at large, these must be true:
 - [x] `manifest.json` attached to the latest release (so update checks work).
       *Shipped in v1.1.0.*
 - [x] `NOTION-SYNC.md` has real page URLs for: AI OS hub, Operating Framework,
-      Team directory, New Hire Onboarding DB, Onboarding Modules, Packs Library,
-      Promotion Rules. *Shipped in v1.1.0.*
+      Team directory, New Hire Onboarding DB. *Shipped in v1.1.0; trimmed in
+      v1.5.0 when the hub was slimmed to just download + AI Memory.*
 - [x] New hire gate built into `setup-questionnaire.md` + `new-hire-flow.md`.
       *Shipped in v1.1.0.*
 - [x] `packs/company-writing.md` and `packs/company-meetings.md` exist.
@@ -119,7 +122,7 @@ changes are the last resort, not the first.
 ## Post-mortems
 
 For anything that pages an employee's trust in the assistant (bad Notion write,
-lost memory, confusing onboarding), write a short post-mortem. Save it as a
-sub-page under `[0 — Design Decisions (locked)]`. Include: what happened, what
-the Contract rule should have prevented, what we changed. These are the only
-way we get the Contract right at scale.
+lost memory, confusing onboarding), write a short post-mortem and commit it
+under `docs/postmortems/` in the repo. Include: what happened, what the
+Contract rule should have prevented, what we changed. These are the only way
+we get the Contract right at scale.

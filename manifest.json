@@ -1,39 +1,32 @@
 {
   "$schema": "https://raw.githubusercontent.com/tomasmb/aa-ai-os-template/main/docs/manifest.schema.json",
   "name": "alpha-assistant",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "released_at": "2026-04-21",
   "channel": "stable",
   "changelog": [
-    "Your assistant now comes to you — a short morning check-in orients the day, an end-of-day wrap captures what hung, and every Friday a weekly digest of what you own lands in your email",
-    "Every ritual is concise, actionable, and invites you to engage — you're not reading an update, you're being handed the next move",
-    "Weekly digest uses your own email client (one click to send). No Slack, no extra setup, no new MCP",
-    "Page owners no longer need to add an 'Assistant Updates' section to every Notion page — the shared brain is the primary surface, and the inbox is now opt-in for owners who want it",
-    "No action required if you're already on v1.3 — run /update to get the rituals and we'll walk you through picking times"
+    "Your assistant now starts knowing the team — the shared brain is pre-loaded from our existing Notion: every teammate from the directory, our foundational Operating Principles, and the projects with recent activity",
+    "From your first session, 'who owns X?' and 'what did we decide about Y?' get precise answers — no warm-up period, no empty databases, no 'give me a few weeks'",
+    "The Notion hub is now radically concise — just the download link and the shared brain. Everything else (Contract, onboarding, promotion rules, roadmap, design decisions) lives inside the folder, one canonical copy, no duplication",
+    "No action required if you're already on v1.4 — run /update to pick up the new pack; your assistant will just know more from its next session"
   ],
   "changelog_semver": [
-    "Added packs/company-rituals.md — morning check-in, end-of-day wrap, weekly review. Each ritual follows a strict shape (context + hanging item + concrete offer). Brain-aware: pulls the user's Projects (Owner), recent Decisions, actionable Insights.",
-    "Added rituals/ folder with per-host scheduler templates: launchd (macOS), cron (Linux), Task Scheduler PowerShell (Windows), Claude Scheduled Tasks walkthrough. Graceful fallback for hosts without native scheduling (Cursor): ritual fires on next session open past scheduled time.",
-    "Added digests/email-weekly.md — weekly owner digest template. Delivery is email-only via user's default mail client (mailto:) or opt-in SMTP. No Slack, no Google Chat, no MCP required. Sensitivity filter applies per Rule 14.",
-    "CONTRACT.md bumped to v1.3 — new Rule 15 (proactive rituals). Rule 9 softened: inbox writes are opt-in per page owner (silent skip when section absent). Rule count 14 → 15.",
-    "onboarding/setup-questionnaire.md: new Block 7.5 collects ritual times and installs per-host scheduler config in one step.",
-    "SOUL.md: five behaviors → six (added Rhythm).",
-    "docs/SPEC.md: folder contract updated (rituals/, digests/, memory/rituals-log.md, logs/ritual-*.log); Contract summary now 15 rules; Rule 9 softened language; open questions resolved (email-only digest).",
-    "TOOLS.md: removed Slack MCP from recommended list; added 'Ritual scheduling by host' matrix; explicit note that the digest requires no MCP.",
-    "WORKSTYLE.md: new Rituals + Digests sections collected at onboarding.",
-    "PROMOTION-RULES.md + docs/maintainer-skill.md: Slack references replaced with email. Pre-rollout checklist updated: inbox sections now opt-in, rituals marked shipped.",
-    "memory/rituals-log.md: append-only audit of ritual fires for engagement measurement + graceful-fallback detection."
+    "Added packs/company-brain-seed.md — documented one-time bulk seeding procedure for the brain. Maintainer-run, dedup-safe on re-run. Seeds People (all, high-confidence) + foundational Decisions (curated from Operating Framework) + active Projects (recent activity, curated). Insights intentionally empty.",
+    "Notion brain seeded: all active People rows from Team directory, 5 foundational Decisions from Operating Principles, 5 active Projects from last-2-weeks activity (Alpha Turbo Squad, Coaching Summer Program, Summer Learning Plan, Pilot 2 Launch, April Functional Priorities).",
+    "Notion hub radically slimmed: former sub-pages (Overview, Get Your Assistant, AI Contract, Folder Template, Tool Setup, Promotion Rules, Governance, Roadmap, Onboarding Modules, Packs Library, Design Decisions) archived. Single source of truth for those docs now lives inside the folder.",
+    "packs/README.md: added company-brain-seed.md entry to recommended first packs and MCP matrix.",
+    "Schema quirk documented in seed pack: Projects.Source options do not include 'document' (only conversation/meeting/manual/decision) — seed uses 'manual'. Decisions.Source does include 'document'."
   ],
   "download": {
-    "url": "https://github.com/tomasmb/aa-ai-os-template/releases/download/v1.4.0/alpha-assistant-v1.4.0.zip",
-    "latest_url": "https://github.com/tomasmb/aa-ai-os-template/releases/latest/download/alpha-assistant-v1.4.0.zip",
+    "url": "https://github.com/tomasmb/aa-ai-os-template/releases/download/v1.5.0/alpha-assistant-v1.5.0.zip",
+    "latest_url": "https://github.com/tomasmb/aa-ai-os-template/releases/latest/download/alpha-assistant-v1.5.0.zip",
     "sha256": "",
     "size_bytes": 0,
     "_note": "sha256 + size are populated in the release-attached copy of this manifest. The in-repo copy intentionally omits them because its own hash would be a self-reference. Assistants read the remote manifest via manifest_url to get the live numbers."
   },
   "manifest_url": "https://github.com/tomasmb/aa-ai-os-template/releases/latest/download/manifest.json",
   "repository": "https://github.com/tomasmb/aa-ai-os-template",
-  "release_notes_url": "https://github.com/tomasmb/aa-ai-os-template/releases/tag/v1.4.0",
+  "release_notes_url": "https://github.com/tomasmb/aa-ai-os-template/releases/tag/v1.5.0",
   "minimum_previous_version": "1.0.0",
   "migrations": [],
   "protected_files": [

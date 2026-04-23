@@ -7,16 +7,17 @@
 
 ## 🔒 Canonical Alpha pages (hardcoded — same for every employee)
 
+The AI OS Notion hub is deliberately lean (v1.5+): it hosts only the download
+link and the AI Memory databases. All AI OS documentation (Contract,
+Promotion Rules, onboarding modules, packs catalogue, governance, roadmap)
+lives inside the folder, single canonical copy, no duplication.
+
 | Purpose | Notion URL |
 |---|---|
-| **Alpha AI OS — V1** (this assistant's hub + docs) | https://www.notion.so/3492901d790881df80e3fbfefd7e7b70 |
+| **Alpha AI OS — V1** (download hub + AI Memory parent) | https://www.notion.so/3492901d790881df80e3fbfefd7e7b70 |
 | **Operating Framework** (how Alpha works) | https://www.notion.so/2892901d79088097b23ff06dbb41b4dc |
 | **Team directory** (who works here) | https://www.notion.so/2892901d790880c0a0e9d5594c29861d |
 | **👋 New Hire Onboarding** (database) | https://www.notion.so/2922901d7908802ab4d6d0b79fb15722 |
-| **Onboarding Modules** (primer index) | https://www.notion.so/3492901d7908811d9d49db4f8f6e1dd7 |
-| **Packs Library** (optional pack catalogue) | https://www.notion.so/3492901d790881beb88fc5681b3ceb4a |
-| **Promotion Rules** (reference for Contract §9) | https://www.notion.so/3492901d790881b4bc7ffe7c08891da3 |
-| **Governance & Versioning** | https://www.notion.so/3492901d79088150aab3ebf136bb046e |
 
 ## 🔒 AI Memory databases (Contract §14 — shared brain)
 
@@ -54,7 +55,6 @@ These are resolved by looking the user up in Notion during setup.
 | Operating Framework | Summarizes into `onboarding/company.md` | Monthly + on-change |
 | Team directory (the user's team) | Populates `onboarding/team.md` | Monthly + on-change |
 | New Hire Onboarding card (if new hire) | Orchestrates the onboarding walk-through per `onboarding/new-hire-flow.md` | Every session until Status = Complete |
-| Packs Library | Fetches pack content when the user asks to install one | On demand |
 | Active project pages | Reads for context; never writes canonically | Weekly (when user mentions a project) |
 
 ## Write targets (where auto-promotes land)

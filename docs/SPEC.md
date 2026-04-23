@@ -222,15 +222,19 @@ The folder is distributed in two halves, which is what makes it safe and easy at
 - **Alpha-specific content stays in private Notion** — company primer, team primers, packs. The
   assistant pulls whatever it needs on first run via the Notion MCP the user already has auth for.
 
-The "Get Your Assistant" Notion page is the front door: one big **Download** button pointing to the
-latest GitHub release zip. User clicks → gets a zip → unzips → opens the folder in their AI tool.
-No git, no permissions, no CLI.
+The Alpha AI OS Notion hub is the front door: one download link at the top pointing to the
+latest GitHub release zip, the 🧠 AI Memory databases beneath it, nothing else. User clicks →
+gets a zip → unzips → opens the folder in their AI tool. No git, no permissions, no CLI.
+
+From v1.5 the hub is deliberately lean: all AI OS documentation (Contract, Promotion Rules,
+onboarding modules, packs catalogue, governance, roadmap, design decisions) lives inside the
+folder as the single canonical copy. The hub stays concise on purpose.
 
 Power users can `git clone` the repo if they want, but zero non-technical users need to.
 
 ## Setup flow — zero questions at install, all questions in conversation
 
-1. User downloads the zip from the Notion "Get Your Assistant" page.
+1. User downloads the zip from the Alpha AI OS Notion hub.
 2. User opens the folder in their AI tool of choice. The adapter file (AGENTS.md, CLAUDE.md, or
    cursor rules) points the AI to `CONTRACT.md`.
 3. AI loads the Contract. Detects USER.md is incomplete. Per Contract §5, runs setup:
@@ -280,21 +284,11 @@ is missing. The AI never makes the user read the file directly — it reads it a
 
 ## Notion structure (the shared brain)
 
-The canonical Notion hub page tree for V1:
+The canonical Notion hub page tree for V1 (radically slimmed in v1.5):
 
 ```text
-Alpha AI OS — V1                   (the hub, human-visible)
-  ├── Overview                     what this is, how it works, who it's for
-  ├── Get Your Assistant           download link + setup walkthrough
-  ├── AI Contract                  canonical Contract text (synced from folder)
-  ├── Folder Template              every file in the template, explained
-  ├── Tool Setup                   Claude Desktop / Cursor / Claude Code / Codex / openclaw
-  ├── Promotion Rules              what gets promoted (Rule 9), how, to which scope
-  ├── Onboarding Modules           company primer, role primers, team primers
-  ├── Packs Library                optional capability packs
-  ├── Governance & Versioning      how the template evolves, who owns what
-  ├── Roadmap                      where it's going
-  └── 🧠 AI Memory                  the shared AI-maintained knowledge graph (v1.3)
+Alpha AI OS — V1                   (the hub — download link + AI Memory, nothing else)
+  └── 🧠 AI Memory                  the shared AI-maintained knowledge graph (v1.3+)
         ├── 👤 People               DB — one row per person (Email as key)
         ├── 🚀 Projects             DB — one row per active initiative
         ├── ✅ Decisions            DB — one row per durable decision
@@ -452,7 +446,7 @@ host that the assistant reads and walks the user through in conversation.
 ### v1.0 — Company rollout
 - Signed template releases on a public URL.
 - All teams have team packs.
-- Onboarding path: Notion "Get Your Assistant" → download → 5-minute setup → productive.
+- Onboarding path: Notion hub → download → 5-minute setup → productive.
 - Weekly brain review cadence (Tomás + Ops partner) for dedup / conflict resolution.
 
 ### v1.x — Growable surface
@@ -467,7 +461,8 @@ host that the assistant reads and walks the user through in conversation.
 |---|---|---|
 | Where is the folder repo hosted? | **Public GitHub** `tomasmb/aa-ai-os-template` | Template is generic; no secrets. Public removes permission friction for every employee. |
 | Is company-specific content in the repo? | **No** — it stays in private Notion and is pulled on first run | Keeps the public repo safe and keeps Notion as the single source of truth for org knowledge. |
-| How do non-technical users download? | **Download button on the "Get Your Assistant" Notion page → zip from latest GitHub release** | No git, no CLI. One click. Power users can still clone. |
+| How do non-technical users download? | **Download callout on the Alpha AI OS Notion hub → zip from latest GitHub release** | No git, no CLI. One click. Power users can still clone. |
+| What lives on the Notion hub? | **v1.5+: just the download link and the 🧠 AI Memory databases.** All other docs live in the folder. | No duplication, no drift. One canonical copy per doc. |
 | Consent per Notion write? | **Auto-promote to "Assistant Updates" inbox section; explicit consent only to create new pages** | Speed without spam. Owners consolidate inbox → canonical on their own cadence. |
 | One-click per-host installers (.mcpb, etc.)? | **Not in V1.** Revisit only if adoption data shows friction | Maintaining 5 wrappers is 5× cost for marginal onboarding gain. |
 | How do users see versions? | **Dates + plain-English changelog.** Semver only on request | Non-technical users shouldn't be confronted with `v1.4.2`. |
