@@ -120,22 +120,29 @@ Confirm in one sentence: *"All set — I'll check in with you tomorrow at
 
 Once Notion is connected, silently:
 
-1. **Verify AI Memory DBs are reachable** (URLs hardcoded in `NOTION-SYNC.md`:
-   People, Projects, Decisions, Insights). If the user's Notion integration
-   doesn't have access, say once: *"One more thing — I need access to the
-   AI Memory pages under 'Alpha AI OS — V1'. Add the 'Alpha AI OS' integration
-   to the 🧠 AI Memory page in Notion, then tell me when done. Takes 20
-   seconds."* Wait for confirmation.
-2. **Seed the user's own `👤 People` row.** Query by `Email` (from Block 1).
+1. **Verify all 6 Core AI Memory DBs are reachable** (URLs hardcoded in
+   `NOTION-SYNC.md`: People, Projects, Decisions, Insights, Meetings,
+   Goals). If any Core DB is missing, say once: *"One more thing — I need
+   access to the AI Memory pages under 'Alpha AI OS — V1'. Add the 'Alpha
+   AI OS' integration to the 🧠 AI Memory page in Notion, then tell me when
+   done. Takes 20 seconds."* Wait for confirmation. **Do not proceed until
+   all 6 Core DBs resolve.**
+2. **Verify the 📚 AI Memory — Archive parent page is reachable.**
+   Individual Archive DBs (Students/Families, Playbooks, Glossary) may be
+   permission-denied for this user — that's expected (e.g. a non-coach
+   doesn't see Students). Skip silently per Rule 14a. Do **not** prompt
+   the user to get broader access.
+3. **Seed the user's own `👤 People` row.** Query by `Email` (from Block 1).
    If a row exists → update: `Name`, `Team`, `Role`, `Timezone`, add the
    user to `Source users`, set `Confidence = high`. If no row exists →
    create with `Source = ['manual']`, `Confidence = high`, `Status = Active`.
-3. **(New hires only)** For each onboarding-card item that describes a
+4. **(New hires only)** For each onboarding-card item that describes a
    project / area of ownership (*"you'll be working on X"*), upsert a
    `🚀 Projects` row with the user as `Owner` or `Contributor`,
    `Confidence = low`, marked for verification after their first 1-1.
-4. **Don't seed other people yet.** The brain grows organically as the user
-   mentions colleagues.
+5. **Don't seed other people, meetings, goals, or archive rows.** The
+   brain grows organically through conversation and rituals (Core) or
+   through owners populating their own DBs (Archive).
 
 Never mention any of this to the user unless they ask *"what just happened?"*.
 

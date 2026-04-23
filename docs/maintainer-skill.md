@@ -9,11 +9,11 @@
 - **Git repo** (maintainer + user truth — folder ships from here):
   [`tomasmb/aa-ai-os-template`](https://github.com/tomasmb/aa-ai-os-template)
 - **Notion hub** (front door only): `Alpha AI OS — V1` — download link + the
-  🧠 AI Memory databases. Nothing else.
+  🧠 AI Memory (Core) and 📚 AI Memory — Archive databases. Nothing else.
 - **Spec:** [`docs/SPEC.md`](./SPEC.md) in this repo
 
 The repo is the single source of truth for the product. The Notion hub only
-surfaces the download and hosts the shared brain databases.
+surfaces the download and hosts the shared brain databases (both tiers).
 
 ## Weekly review (60–90 minutes, ideally same slot every week)
 
@@ -39,16 +39,22 @@ For every release:
 2. At least one reviewer from Core Team (async, 72h SLA).
 3. On merge: bump `.version`, update changelog snippet for the release, tag
    `v<x.y.z>`, push tag.
-4. Attach the freshly built zip as a release asset. Zip recipe:
+4. Attach the freshly built zip as a release asset. **Asset name is
+   unversioned from v1.6.0 onwards** — the unversioned name is what keeps
+   the Notion hub download link from drifting every release. Zip recipe:
    ```bash
    cd <parent-of-repo-checkout>
    cp -r aa-ai-os-template alpha-assistant
-   zip -r alpha-assistant-v<x.y.z>.zip alpha-assistant -x "*.DS_Store" "alpha-assistant/.git/*"
+   zip -r alpha-assistant.zip alpha-assistant -x "*.DS_Store" "alpha-assistant/.git/*"
    rm -rf alpha-assistant
-   shasum -a 256 alpha-assistant-v<x.y.z>.zip
+   shasum -a 256 alpha-assistant.zip
    ```
-5. Update the download callout on the Alpha AI OS Notion hub page: URL
-   (always latest/download/... is stable) + new sha256 + plain-English changelog.
+5. **Do not edit the Notion hub's download callout.** The hub links to
+   `releases/latest/download/alpha-assistant.zip` (unversioned, stable) and
+   intentionally omits version/SHA/size — users see detailed release notes
+   on the GitHub release page instead. If the hub's copy needs a genuine
+   content change (e.g. the AI Memory tier structure shifts), that's a
+   separate, conscious hub edit — not a per-release chore.
 6. Announce in the pilot channel with the plain-English changelog only
    (no semver in the announcement — Rule 3 applies to humans too).
 
@@ -67,6 +73,10 @@ Before telling employees at large, these must be true:
       *Shipped in v1.1.0. Meetings pack is read.ai-ready.*
 - [x] **Proactive rituals live.** Morning check-in, EOD wrap, weekly review
       + email owner digest (Contract §15). *Shipped in v1.4.0.*
+- [x] **Bi-level AI Memory live.** Core (6 DBs: People, Projects, Decisions,
+      Insights, Meetings, Goals) + Archive (3 DBs: Students/Families,
+      Playbooks, Glossary) with Rule 14a permission-gated Archive reads.
+      *Shipped in v1.6.0.*
 - [ ] **Opt-in `## Assistant Updates` sections on the pages owners want them.**
       **No longer mandatory** after v1.4 — Rule 9 softened to silent-skip when
       the section isn't present; the brain (Rule 14) is the primary durable

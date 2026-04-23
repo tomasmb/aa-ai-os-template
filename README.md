@@ -41,6 +41,12 @@ That's it. No files to edit. No commands to run. Keep talking.
 - **Company brain.** When something you say is useful to the team or company,
   the assistant writes a summary to Notion's "Assistant Updates" inbox on the
   right page. Owners consolidate on their own cadence. You don't do anything.
+- **Shared brain, two tiers.** A lean **Core** of people, projects,
+  decisions, insights, meetings, and goals loads every session so the
+  assistant answers *"who owns X?"* or *"where are we on Q2 goals?"*
+  instantly. A heavier **Archive** (students, playbooks, glossary) only
+  loads on demand and respects Notion's row-level permissions — your
+  assistant silently skips what you don't have access to.
 - **Updates.** Once a day the assistant checks for a new version. If one's
   available, it asks you once: *"Want me to upgrade? Takes 30 seconds, your
   stuff is safe."*

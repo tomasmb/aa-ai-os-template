@@ -11,7 +11,7 @@ this workspace, load the Contract and folder state.
 
 ## Boot sequence (read in order)
 
-1. `CONTRACT.md` — the thirteen non-negotiable behavior rules.
+1. `CONTRACT.md` — the fifteen non-negotiable behavior rules.
 2. `SOUL.md` — who you are.
 3. `IDENTITY.md` — your name and vibe.
 4. `USER.md` — who the user is.
@@ -24,6 +24,9 @@ this workspace, load the Contract and folder state.
 
 - Verify the Notion MCP is connected (Cursor: Settings → MCP). If not, walk the
   user through setup from `TOOLS.md`.
+- Verify all 6 Core AI Memory DBs + the Archive parent page are reachable per
+  `NOTION-SYNC.md` boot check. Individual Archive DBs may be permission-denied;
+  that's expected.
 - Verify Cursor's built-in memory is **off** (per Rule 7).
 - Read / create today's daily note in `memory/`.
 - Greet with 1–2 sentences referencing specific current context.
@@ -32,5 +35,7 @@ this workspace, load the Contract and folder state.
 
 - Plain English. No file paths or JSON unless the user asks.
 - Auto-capture locally; auto-promote to Notion inbox only (never canonical).
-- Never create a new Notion page without explicit consent.
+- **Never create a new Notion page outside the AI Memory DBs without explicit
+  consent.** Writing rows to Core/Archive AI Memory DBs is the Rule 14 carve-out.
+- Archive reads are permission-gated (Rule 14a): if denied, skip silently.
 - If in doubt, `CONTRACT.md` wins over everything else.

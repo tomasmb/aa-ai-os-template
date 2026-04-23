@@ -5,37 +5,75 @@
 > company). URLs marked with 🔒 are **hardcoded** — they're part of the shipped
 > template and should not be edited by the user.
 
+## The bi-level AI Memory model (v1.6+)
+
+AI Memory has two tiers, each with its own job:
+
+- **🧠 AI Memory — Core** (6 databases): lean, always-on. Entities + relations.
+  Loaded every session. Rows are short (name, a few fields, links). If a row
+  grows past one paragraph of prose, it belongs in Archive, not Core.
+- **📚 AI Memory — Archive** (3 databases): raw material + canonical pointers.
+  Read on demand. Sensitive DBs (Students/Families) are permission-gated at
+  the Notion row level — the assistant never attempts to bypass denied reads.
+
+Core holds entities. Archive holds bodies. Core rows reference Archive rows
+via relations, **never by copying content across tiers**. See `CONTRACT.md`
+Rule 14 for the invariants.
+
 ## 🔒 Canonical Alpha pages (hardcoded — same for every employee)
 
 The AI OS Notion hub is deliberately lean (v1.5+): it hosts only the download
-link and the AI Memory databases. All AI OS documentation (Contract,
-Promotion Rules, onboarding modules, packs catalogue, governance, roadmap)
-lives inside the folder, single canonical copy, no duplication.
+link and the AI Memory pages. All AI OS documentation (Contract, Promotion
+Rules, onboarding modules, packs catalogue, governance, roadmap) lives inside
+the folder, single canonical copy, no duplication.
 
 | Purpose | Notion URL |
 |---|---|
 | **Alpha AI OS — V1** (download hub + AI Memory parent) | https://www.notion.so/3492901d790881df80e3fbfefd7e7b70 |
-| **Operating Framework** (how Alpha works) | https://www.notion.so/2892901d79088097b23ff06dbb41b4dc |
+| **🧠 AI Memory** (Core parent page) | https://www.notion.so/3492901d790881adb05df812f2aa4131 |
+| **📚 AI Memory — Archive** (Archive parent page) | https://www.notion.so/34b2901d7908816eaa04cd681e796e61 |
+| **Operating Framework** (how Alpha works — Principles live here) | https://www.notion.so/2892901d79088097b23ff06dbb41b4dc |
 | **Team directory** (who works here) | https://www.notion.so/2892901d790880c0a0e9d5594c29861d |
 | **👋 New Hire Onboarding** (database) | https://www.notion.so/2922901d7908802ab4d6d0b79fb15722 |
 
-## 🔒 AI Memory databases (Contract §14 — shared brain)
+## 🔒 Core AI Memory databases (Contract §14 — shared brain, always-on)
 
 Read + write under `packs/company-brain.md`. Natural keys per DB are enforced
 to prevent duplicates. Provenance is mandatory on every write.
 
 | Database | URL | Natural key | Primary relations |
 |---|---|---|---|
-| **👤 People** | https://www.notion.so/6b06c4411b9448beb21e14f4df69fa8b | `Email` | — (target of Projects.Owner, Decisions.Owner, Insights.Related people) |
-| **🚀 Projects** | https://www.notion.so/b23db3243d4146bf85e60ede57dca759 | normalized `Name` | `Owner` → People, `Contributors` → People |
-| **✅ Decisions** | https://www.notion.so/c19786631d3d41448dac8dc56b195604 | `Title` + `Decided on` | `Owner` / `Participants` → People, `Related projects` → Projects |
-| **💡 Insights** | https://www.notion.so/73815567aaa94aea90fb1d9678f80f14 | fuzzy `Title` + ≥2 tag overlap | `Related people` → People, `Related projects` → Projects, `Related decisions` → Decisions |
+| **👤 People** | https://www.notion.so/6b06c4411b9448beb21e14f4df69fa8b | `Email` | target of Projects.Owner, Decisions.Owner, Meetings.Attendees, Goals.Owner |
+| **🚀 Projects** | https://www.notion.so/b23db3243d4146bf85e60ede57dca759 | normalized `Name` | `Owner`/`Contributors` → People; `Goals served` → Goals |
+| **✅ Decisions** | https://www.notion.so/c19786631d3d41448dac8dc56b195604 | `Title` + `Decided on` | `Owner`/`Participants` → People; `Related projects` → Projects; `Source Meeting` → Meetings; `Related Goals` → Goals |
+| **💡 Insights** | https://www.notion.so/73815567aaa94aea90fb1d9678f80f14 | fuzzy `Title` + ≥2 tag overlap | `Related people/projects/decisions`; `Source Meeting` → Meetings |
+| **🗓 Meetings** | https://www.notion.so/a31bc7be10114aeb861e73fc83293f67 | `Title` + `Date` | `Attendees` → People; `Related Project` → Projects; `Related Student` → Students (Archive); produces `Decisions` + `Insights` |
+| **🎯 Goals** | https://www.notion.so/b059e5f7c5fd4b7e8dddeea8b8de255f | `Goal` + `Period` | `Owner` → People; `Related Projects` → Projects; `Related Decisions` → Decisions |
 
-**Parent page** (hub within the AI OS Notion): https://www.notion.so/3492901d790881adb05df812f2aa4131
+## 🔒 Archive AI Memory databases (Contract §14a — read on demand, permissioned)
 
-**Boot check:** verify all 4 DBs are reachable at session start. If any is
-missing, stop and walk the user through permissions (their Notion integration
-must have access to the `🧠 AI Memory` page). See `packs/company-brain.md`.
+Archive rows are never loaded eagerly. They're read when a Core relation
+traverses into them, or when the user explicitly asks for that material. Row
+access is permission-gated by Notion — the assistant silently skips what it
+can't see and does not prompt the user to grant broader access.
+
+| Database | URL | Natural key | Access default |
+|---|---|---|---|
+| **🎓 Students / Families** | https://www.notion.so/149cab6767dd4878b3162cf862f65adc | `Student Name` + `Coach` | **Default-deny** — assigned coach + Head of Coaching only |
+| **📘 Playbooks** (SOP index) | https://www.notion.so/fb856e03efca4defaf3759cb63296f67 | `Title` | Open-read, owner-write |
+| **📖 Glossary** | https://www.notion.so/83c00d2791674c8ba85968cca6f66727 | `Term` | Open-read, open-write |
+
+The Playbooks DB is a **pointer index** — it never stores SOP bodies, only
+title/owner/canonical-link/last-reviewed. The Glossary is a one-line-per-term
+reference capped at ~100 rows by convention; full concepts link out.
+
+**Boot check:**
+1. Verify all 6 **Core** DBs are reachable. If any is missing, stop and walk
+   the user through granting the Notion integration access to the `🧠 AI Memory`
+   page. See `packs/company-brain.md`.
+2. Verify the **📚 AI Memory — Archive** parent page is reachable. Individual
+   Archive DBs may be permission-denied for this user — that's **expected**
+   (e.g. a non-coach doesn't see Students). Do not prompt; just skip.
 
 ## Per-user pages (discovered at first run)
 
@@ -52,7 +90,7 @@ These are resolved by looking the user up in Notion during setup.
 
 | Source | What the AI does with it | Refresh cadence |
 |---|---|---|
-| Operating Framework | Summarizes into `onboarding/company.md` | Monthly + on-change |
+| Operating Framework | Summarizes into `onboarding/company.md`. Principles live here — the brain reads them, never copies them into Decisions. | Monthly + on-change |
 | Team directory (the user's team) | Populates `onboarding/team.md` | Monthly + on-change |
 | New Hire Onboarding card (if new hire) | Orchestrates the onboarding walk-through per `onboarding/new-hire-flow.md` | Every session until Status = Complete |
 | Active project pages | Reads for context; never writes canonically | Weekly (when user mentions a project) |
@@ -85,11 +123,11 @@ visible inside their canonical page.
 
 ### Rule 14 — AI Memory databases (structured, direct writes)
 
-See the "AI Memory databases" table above. The assistant writes rows
+See the "Core" and "Archive" tables above. The assistant writes rows
 directly (share-by-default) after the sensitivity gate passes. Rows in the
-AI Memory DBs are the one class of "new Notion content" that the assistant
-may create without per-item consent, because the user consented to the
-entire brain model at setup time.
+AI Memory DBs — both tiers — are the one class of "new Notion content" that
+the assistant may create without per-item consent, because the user consented
+to the brain model at setup time.
 
 ## Update manifest (for self-updates)
 

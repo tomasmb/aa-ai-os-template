@@ -1,32 +1,43 @@
 {
   "$schema": "https://raw.githubusercontent.com/tomasmb/aa-ai-os-template/main/docs/manifest.schema.json",
   "name": "alpha-assistant",
-  "version": "1.5.0",
-  "released_at": "2026-04-21",
+  "version": "1.6.0",
+  "released_at": "2026-04-23",
   "channel": "stable",
   "changelog": [
-    "Your assistant now starts knowing the team — the shared brain is pre-loaded from our existing Notion: every teammate from the directory, our foundational Operating Principles, and the projects with recent activity",
-    "From your first session, 'who owns X?' and 'what did we decide about Y?' get precise answers — no warm-up period, no empty databases, no 'give me a few weeks'",
-    "The Notion hub is now radically concise — just the download link and the shared brain. Everything else (Contract, onboarding, promotion rules, roadmap, design decisions) lives inside the folder, one canonical copy, no duplication",
-    "No action required if you're already on v1.4 — run /update to pick up the new pack; your assistant will just know more from its next session"
+    "The shared brain now has two tiers: a lean Core that loads every session (People, Projects, Decisions, Insights, and two new ones: Meetings and Goals), plus a new Archive tier for heavier, scoped material (Students/Families, Playbooks, Glossary) that the assistant reads only when it actually needs to",
+    "Operating Principles are no longer seeded into Decisions — they stay as doctrine in the Operating Framework, which your assistant reads directly. Decisions now reflects real operational decisions only, not mission statements",
+    "Meetings are now first-class: every meeting gets a lean row, with decisions and insights linked back to it. Weekly digests and morning rituals use Meetings for context ('what happened in last week's sync?')",
+    "Goals track quarterly/monthly commitments alongside Projects — your weekly digest now highlights any at-risk goal you own",
+    "Students/Families is permission-gated at the Notion level: coaches see their own students, nobody else does, and your assistant silently skips what it can't see — no prompts, no retries",
+    "Run /update to pick up the new packs; your assistant boots into the new model from its next session"
   ],
   "changelog_semver": [
-    "Added packs/company-brain-seed.md — documented one-time bulk seeding procedure for the brain. Maintainer-run, dedup-safe on re-run. Seeds People (all, high-confidence) + foundational Decisions (curated from Operating Framework) + active Projects (recent activity, curated). Insights intentionally empty.",
-    "Notion brain seeded: all active People rows from Team directory, 5 foundational Decisions from Operating Principles, 5 active Projects from last-2-weeks activity (Alpha Turbo Squad, Coaching Summer Program, Summer Learning Plan, Pilot 2 Launch, April Functional Priorities).",
-    "Notion hub radically slimmed: former sub-pages (Overview, Get Your Assistant, AI Contract, Folder Template, Tool Setup, Promotion Rules, Governance, Roadmap, Onboarding Modules, Packs Library, Design Decisions) archived. Single source of truth for those docs now lives inside the folder.",
-    "packs/README.md: added company-brain-seed.md entry to recommended first packs and MCP matrix.",
-    "Schema quirk documented in seed pack: Projects.Source options do not include 'document' (only conversation/meeting/manual/decision) — seed uses 'manual'. Decisions.Source does include 'document'."
+    "CONTRACT.md v1.4: Rule 14 rewritten for bi-level AI Memory (Core + Archive). Five lean invariants codified (no cross-tier duplication, stated retention per DB, one canonical query per DB, canon not mirrored, Core eager / Archive lazy). Rule 14a added: Archive reads are permission-gated by Notion — denied reads are silently skipped, never retried, never prompted.",
+    "Notion: created 📚 AI Memory — Archive parent page under the Alpha AI OS — V1 hub, with scope statement + invariants + permission model.",
+    "Notion: created three Archive DBs — 🎓 Students / Families (default-deny scoped), 📘 Playbooks (pointer index, never SOP bodies), 📖 Glossary (~100-row soft cap).",
+    "Notion: created two Core DBs — 🗓 Meetings (event backbone; Title+Date key; relates to People/Projects/Students and produces Decisions/Insights), 🎯 Goals (Goal+Period key; Owner → People; relates to Projects + Decisions).",
+    "Notion cleanup: moved five Operating-Principle pages out of the ✅ Decisions DB; Principles stay canonical in the Operating Framework and are read there, not mirrored.",
+    "NOTION-SYNC.md: replaced single 4-DB table with Core (6 DBs) + Archive (3 DBs) tables including natural keys + primary relations. Boot check expanded to verify 6 Core DBs reachable + Archive parent page; Archive row-level denials are expected and skipped silently.",
+    "packs/company-brain.md: added DB semantics for Meetings, Goals, Students, Playbooks, Glossary. Added Core-vs-Archive classification heuristic. Defined Archive → Core promotion rule (by link only, never by copy). Added per-DB growth expectation table and quarterly Archive audit.",
+    "packs/company-brain-seed.md: dropped Step 2 (Operating Principles → Decisions seed). Decisions and Insights now start empty. Added lean seed for Meetings (recurring-meeting stubs only) and Goals (current period only). Archive DBs are explicitly not seeded.",
+    "packs/company-meetings.md: every processed meeting now upserts a Meetings row as the event backbone; Decisions and Insights produced are linked back via Source Meeting + Decisions Produced / Insights Produced relations. Goals updates are written when a meeting surfaces goal status.",
+    "packs/company-rituals.md + digests/email-weekly.md: morning check-in and weekly digest now query Goals (owned, at-risk) and Meetings (upcoming + last 7 days). Weekly email digest adds Goals and Meetings sections.",
+    "onboarding/setup-questionnaire.md Block 8: boot check verifies all 6 Core DBs + the Archive parent page. Archive row-level denials are expected and skipped silently per Rule 14a.",
+    "memory/brain-cache/README.md: split into core/ (short TTL, eager) and archive/ (long TTL, lazy) namespaces. Meetings (2h), Goals (6h), Playbooks + Glossary (24h). Students / Families is never cached locally; every read goes live.",
+    "docs/SPEC.md: four-layers diagram shows Core + Archive. Contract summary Rule 14 updated with 14a. Notion structure tree updated with 9 DBs. Roadmap entry added for v1.6.0.",
+    "AGENTS.md / CLAUDE.md / .cursor/rules/alpha-assistant.mdc: aligned with 15 Contract rules and the Rule 14 carve-out (AI Memory DB row creation is allowed; other new Notion pages still need explicit consent). Boot checklists reference Core + Archive verification and Rule 14a permission handling."
   ],
   "download": {
-    "url": "https://github.com/tomasmb/aa-ai-os-template/releases/download/v1.5.0/alpha-assistant-v1.5.0.zip",
-    "latest_url": "https://github.com/tomasmb/aa-ai-os-template/releases/latest/download/alpha-assistant-v1.5.0.zip",
+    "url": "https://github.com/tomasmb/aa-ai-os-template/releases/download/v1.6.0/alpha-assistant.zip",
+    "latest_url": "https://github.com/tomasmb/aa-ai-os-template/releases/latest/download/alpha-assistant.zip",
     "sha256": "",
     "size_bytes": 0,
-    "_note": "sha256 + size are populated in the release-attached copy of this manifest. The in-repo copy intentionally omits them because its own hash would be a self-reference. Assistants read the remote manifest via manifest_url to get the live numbers."
+    "_note": "sha256 + size are populated in the release-attached copy of this manifest. The in-repo copy intentionally omits them because its own hash would be a self-reference. Assistants read the remote manifest via manifest_url to get the live numbers. The asset name is unversioned (alpha-assistant.zip) from v1.6.0 onwards so the Notion hub's download link never drifts."
   },
   "manifest_url": "https://github.com/tomasmb/aa-ai-os-template/releases/latest/download/manifest.json",
   "repository": "https://github.com/tomasmb/aa-ai-os-template",
-  "release_notes_url": "https://github.com/tomasmb/aa-ai-os-template/releases/tag/v1.5.0",
+  "release_notes_url": "https://github.com/tomasmb/aa-ai-os-template/releases/tag/v1.6.0",
   "minimum_previous_version": "1.0.0",
   "migrations": [],
   "protected_files": [

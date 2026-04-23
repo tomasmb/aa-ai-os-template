@@ -65,7 +65,11 @@ day. The user gets the same value with slightly worse latency.
    from the last 7 days (surface any that imply follow-up)
 6. **Brain query**: `💡 Insights` with `Suggested action` set, `Related people`
    includes the user
-7. Today's calendar (via Google Calendar MCP if connected) — first 3 events,
+7. **Brain query**: `🎯 Goals` where `Owner` is the user and `Status` in
+   (`committed`, `at_risk`) — surface any at-risk goal once per week max
+8. **Brain query**: `🗓 Meetings` with `Date >= today` and `Attendees`
+   includes the user — used to tee up prep offers (see item 9)
+9. Today's calendar (via Google Calendar MCP if connected) — first 3 events,
    any that are 1-1s the user hasn't met before
 
 ### Output shape (strict — this keeps it concise + actionable)
@@ -222,6 +226,12 @@ See `digests/email-weekly.md` for the template. Contents:
   milestones, drawn from the brain.
 - Decisions where the user is `Owner` or `Participant` made this week.
 - Insights with `Suggested action` where `Related people` includes the user.
+- **Goals where the user is `Owner`** — current status, any transitions
+  (*committed → on_track → at_risk*), and related decisions/projects from
+  the last 7 days. Skip the whole section if the user owns no Goals.
+- **Meetings this week where the user was an attendee** — one line each,
+  with links to the `Decisions Produced` + `Insights Produced`. Caps at
+  5 meetings (the digest is signal, not a log).
 - Items from `## Assistant Updates` inboxes on pages where the user is
   listed as owner in Notion (only if Rule 9 inboxes are in use — skip the
   section if empty).

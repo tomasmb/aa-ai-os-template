@@ -3,7 +3,8 @@
 > Everything in this folder is for people who **maintain** the Alpha AI OS
 > template (Tomás + future delegates). User-facing docs live inside the
 > downloaded folder itself (README, CONTRACT, onboarding, packs). The Notion
-> hub is just the download link + the AI Memory — nothing else, by design.
+> hub is just the download link + the AI Memory (Core + Archive) —
+> nothing else, by design.
 
 ## Contents
 
@@ -19,10 +20,11 @@
 |---|---|
 | The shipped product (folder every employee downloads) | Repo root — `CONTRACT.md`, `SOUL.md`, `README.md`, onboarding, packs, rituals, digests |
 | Maintainer docs (spec, playbooks) | This folder — `docs/` |
-| Notion hub (Alpha AI OS — V1) | **Download link + `🧠 AI Memory`. That's it.** |
+| Notion hub (Alpha AI OS — V1) | **Download link + `🧠 AI Memory` + `📚 AI Memory — Archive`. That's it.** |
 | Primers (company / team / role) | Folder — `onboarding/company.md`, `team.md`, `role.md` |
 | Packs content | Folder — `packs/*.md` |
-| Shared brain rows (People / Projects / Decisions / Insights) | Notion `🧠 AI Memory` databases |
-| Release artifacts | GitHub Releases |
+| Shared brain — Core rows (People / Projects / Decisions / Insights / Meetings / Goals) | Notion `🧠 AI Memory` databases |
+| Shared brain — Archive rows (Students / Playbooks / Glossary) | Notion `📚 AI Memory — Archive` databases (permission-gated) |
+| Release artifacts | GitHub Releases (unversioned `alpha-assistant.zip` asset from v1.6.0+) |
 
 Nothing canonical lives on any individual's machine.

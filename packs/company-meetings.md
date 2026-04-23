@@ -18,14 +18,18 @@ Any of these triggers:
 
 When user asks to prep for a meeting:
 
-1. Pull every recent mention of the attendees from `memory/relationships.md`
+1. Query the `🗓 Meetings` DB for the most recent row with these attendees
+   (or this title pattern). Follow its `Decisions Produced` and
+   `Insights Produced` relations. That's usually 60–80% of prep context.
+2. Pull every recent mention of the attendees from `memory/relationships.md`
    and Notion. Summarize: *"Last time you met with X (April 10), you agreed
    on Y. Z was open."*
-2. Pull every recent mention of the topic. Surface 1–3 facts the user should
-   recall before walking in.
-3. Ask: *"Want me to draft an agenda, or are you set?"*
-4. If yes → produce a 3–5 bullet agenda grounded in the context above.
-5. Save prep note as `memory/meetings/<YYYY-MM-DD>-<slug>-prep.md`.
+3. Pull every recent mention of the topic. Surface 1–3 facts the user should
+   recall before walking in. Include any active `🎯 Goals` row the meeting
+   touches if the user's prompt mentions the goal area.
+4. Ask: *"Want me to draft an agenda, or are you set?"*
+5. If yes → produce a 3–5 bullet agenda grounded in the context above.
+6. Save prep note as `memory/meetings/<YYYY-MM-DD>-<slug>-prep.md`.
 
 ## Ingest flow (after the meeting)
 
@@ -47,21 +51,39 @@ When user pastes a transcript / read.ai summary / notes:
    - Action items owned by the user → append to today's daily note.
    - New facts/norms → `memory/learnings.md`.
 4. **Write structured rows to the AI Memory brain** (Contract §14, via
-   `packs/company-brain.md`):
+   `packs/company-brain.md`). The Meeting row is the backbone — every other
+   write from this meeting links back to it via the `Source Meeting`
+   relation:
+   - **Meeting row** (always first) → upsert one `🗓 Meetings` row. Dedup
+     by `Title + Date`. Fill `Kind`, `Attendees` (→ People), `Related
+     Project` if the meeting is project-scoped, `Related Student` if it's a
+     coaching session (permissioned — will be written only if the user has
+     access to the Student row), and `Notes Link` pointing to the canonical
+     notes page (the `memory/meetings/<date>-<slug>.md` local file or the
+     Notion notes page if one exists). **Never paste the transcript body
+     into the row.**
    - Each **Decision made** → upsert a `✅ Decisions` row. Title = the
      decision statement. `Decided on` = meeting date. `Owner` = person who
      made the call (relation to `👤 People`). `Participants` = attendees.
      `Rationale` = the reasoning as captured. `Outcome` = the decision
-     itself. `Source` = `meeting`. `Status` = `Active`. Confidence = high
-     if explicit, medium if inferred. Dedup by Title + Decided on.
+     itself. `Source` = `meeting`. `Status` = `Active`. `Source Meeting`
+     → the Meetings row from the first step. Confidence = high if
+     explicit, medium if inferred. Dedup by Title + Decided on. Also
+     back-link by adding the Decision row to the Meeting's `Decisions
+     Produced` relation.
    - Each attendee the assistant doesn't already know → upsert `👤 People`
      row with whatever context the transcript reveals (role mentions,
      expertise, views). Never write sensitive content about an attendee.
    - Each cross-cutting observation (*"onboarding's slow because X"*,
      *"customers keep asking for Y"*) → upsert `💡 Insights` row. If a
      fuzzy match exists, increment `Surface count`. Tag appropriately.
+     Set `Source Meeting` → the Meetings row; back-link via
+     `Insights Produced`.
    - Each project referenced with state change (*"Project X is now
      blocked on Y"*) → update `🚀 Projects.Status` + `Blockers`.
+   - Each goal status update (*"We're on track for Q2 growth"*) → update
+     the matching `🎯 Goals` row's `Status` and append the Decision row to
+     its `Related Decisions` if applicable.
 5. **Auto-promote to Notion canonical pages** (Contract §9) the qualifying
    items:
    - If a decision affects a project → promote summary to that project page's
@@ -77,8 +99,8 @@ When user pastes a transcript / read.ai summary / notes:
    from the meeting. Gated items never write to brain or canon; they land
    in `memory/meetings/` with a `[LOCAL ONLY]` tag.
 7. **Confirm in one sentence:** *"Got the <topic> meeting. 3 decisions, 2
-   action items for you, 1 for <person>. Brain: 3 Decisions + 1 Insight.
-   Canon: 2 inbox entries on <project>."*
+   action items for you, 1 for <person>. Brain: 1 Meeting + 3 Decisions +
+   1 Insight. Canon: 2 inbox entries on <project>."*
 
 ## Auto-ingest from read.ai (future-ready design)
 

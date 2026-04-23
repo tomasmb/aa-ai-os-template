@@ -2,7 +2,7 @@
 
 - Status: canonical
 - Owner: Tomás Morales
-- Last revised: 2026-04-21
+- Last revised: 2026-04-23
 - Supersedes: `ai-os-mvp-thesis.md`, `alpha-v1-master-plan.md`, `alpha-v1-assistant-folder-standard.md`
 
 ## One-sentence pitch
@@ -45,17 +45,25 @@ Every feature decision passes all six. If it fails any, it does not ship.
 └──────────────────────┬────────────────────────────┘
                        │
 ┌──────────────────────┴────────────────────────────┐
-│  AI Memory (Notion) = shared knowledge graph      │
-│  - People, Projects, Decisions, Insights DBs      │
-│  - AI-owned, share-by-default w/ sensitivity gate │
-│  - continuous, structured, relational, queryable  │
+│  AI Memory (Notion) = bi-level shared graph       │
+│  ┌─── Core (always-on) ───────────────────┐       │
+│  │  People · Projects · Decisions ·       │       │
+│  │  Insights · Meetings · Goals           │       │
+│  │  lean entities + relations             │       │
+│  └────────────────────────────────────────┘       │
+│  ┌─── Archive (on-demand, permissioned) ──┐       │
+│  │  Students/Families · Playbooks ·       │       │
+│  │  Glossary                              │       │
+│  │  raw material + canonical pointers     │       │
+│  └────────────────────────────────────────┘       │
+│  AI-owned, share-by-default w/ sensitivity gate   │
 └──────────────────────┬────────────────────────────┘
                        │ MCP (read + direct write on non-sensitive facts)
 ┌──────────────────────┴────────────────────────────┐
 │  Local assistant folder = personal runtime        │
 │  - identity, soul, user profile, memory/          │
 │  - private notes, in-flight work                  │
-│  - sensitivity log, brain cache                   │
+│  - sensitivity log, brain cache (core/ + archive/)│
 └──────────────────────┬────────────────────────────┘
                        │ loaded by
 ┌──────────────────────┴────────────────────────────┐
@@ -68,6 +76,21 @@ Every feature decision passes all six. If it fails any, it does not ship.
 Canon is slow and human. AI Memory is fast and AI-maintained. Local is private.
 The assistant reads across all three and writes to the right layer per Contract
 rules (9 → canon inboxes, 14 → AI Memory DBs, 4 → local memory).
+
+### Bi-level AI Memory invariants (Contract §14)
+
+1. **No content duplication across tiers.** Core rows are lean entities +
+   links. Archive rows hold bodies/pointers. A Core row with more than one
+   paragraph of prose is a smell.
+2. **Every DB has a stated growth expectation + retention policy.** Unbounded
+   DBs get dedupe rules and archival triggers.
+3. **Every DB answers one canonical query uniquely.** Two DBs answering the
+   same question → merge or retire.
+4. **Canon is never mirrored.** Operating Principles, Team directory rows,
+   SOP bodies stay at their canonical source.
+5. **Core loads every session; Archive loads on demand.** Differential
+   caching in `memory/brain-cache/` (`core/` short TTL, `archive/` long TTL,
+   Students never cached).
 
 ## Folder contract
 
@@ -128,7 +151,7 @@ alpha-assistant/
     learnings.md                 things learned from outcomes
     onboarding-progress.md       mid-onboarding recovery state (new hires only)
     meetings/                    one file per meeting, structured header + raw notes
-    brain-cache/                 locally cached brain rows (TTL 1h) — v1.3
+    brain-cache/                 locally cached brain rows (core/ + archive/ namespaces) — v1.6
     sensitivity-log.md           audit of ask-first decisions and forgets — v1.3
     rituals-log.md               audit of ritual fires + engagement — v1.4
     templates/                   scaffolds the assistant fills in
@@ -196,12 +219,16 @@ See `CONTRACT.md` (template below, in full form).
 12. **Failure modes.** Tool errors retry once, then surface plainly. Never silently lose data.
 13. **Non-goals.** Never teach folder structure unprompted. Never dump JSON. Never ask permission to
     remember things locally. Never batch onboarding questions. Never show semver unless asked.
-14. **AI Memory — share by default, with a sensitivity gate.** Write public-work facts directly to
-    the shared brain DBs (People, Projects, Decisions, Insights) under `packs/company-brain.md`. No
-    per-item consent. Dedupe before writing; update-in-place beats create. Ask only when content is
+14. **AI Memory — bi-level, share by default, with a sensitivity gate.** Write public-work facts
+    directly to the shared brain DBs. The brain is two-tier: **Core** (always-on — People,
+    Projects, Decisions, Insights, Meetings, Goals) + **Archive** (on-demand — Students/Families,
+    Playbooks, Glossary). No per-item consent. Dedupe before writing; update-in-place beats create.
+    The five lean invariants apply (no cross-tier duplication; stated retention per DB; one
+    canonical query per DB; canon not mirrored; Core eager, Archive lazy). Ask only when content is
     sensitive (negative feedback about colleagues, personal / health / compensation matters,
     strategic doubt, drafts, explicit privacy markers, third-party PII). Provenance is mandatory and
-    immutable on every write.
+    immutable on every write. **Rule 14a:** Archive reads are permission-gated by Notion — a denied
+    read is silently skipped, never retried, and the user is never prompted for broader access.
 15. **Proactive rituals.** Three rituals run on schedule (morning check-in, end-of-day wrap, weekly
     review + email owner digest — see `packs/company-rituals.md`). Each ritual is concise,
     actionable, and ends with a concrete offer to help. Scheduling is per-host (launchd / cron /
@@ -288,28 +315,47 @@ The canonical Notion hub page tree for V1 (radically slimmed in v1.5):
 
 ```text
 Alpha AI OS — V1                   (the hub — download link + AI Memory, nothing else)
-  └── 🧠 AI Memory                  the shared AI-maintained knowledge graph (v1.3+)
-        ├── 👤 People               DB — one row per person (Email as key)
-        ├── 🚀 Projects             DB — one row per active initiative
-        ├── ✅ Decisions            DB — one row per durable decision
-        ├── 💡 Insights             DB — cross-cutting observations, surface-count dedup
-        └── AI Memory — Privacy     the sensitivity heuristic + user controls
+  ├── 🧠 AI Memory                  Core tier — always-on, lean (v1.6+)
+  │     ├── 👤 People               DB — one row per person (Email as key)
+  │     ├── 🚀 Projects             DB — one row per active initiative
+  │     ├── ✅ Decisions            DB — durable decisions (no more Principles seeded)
+  │     ├── 💡 Insights             DB — cross-cutting observations, surface-count dedup
+  │     ├── 🗓 Meetings             DB — event backbone; links decisions/insights produced
+  │     └── 🎯 Goals                DB — period-bounded OKRs / commitments
+  ├── 📚 AI Memory — Archive        Archive tier — on-demand, permissioned (v1.6+)
+  │     ├── 🎓 Students / Families  DB — scoped per coach (default-deny)
+  │     ├── 📘 Playbooks            DB — pointer index to SOPs; never stores bodies
+  │     └── 📖 Glossary             DB — one-line terms; ~100-row soft cap
+  └── AI Memory — Privacy            the sensitivity heuristic + user controls
 ```
 
 ### AI Memory databases (Contract §14)
 
+#### Core (6 DBs, always-on)
+
 | DB | Purpose | Natural key | Key relations |
 |---|---|---|---|
-| **👤 People** | Who works at Alpha + AI-synthesized context | `Email` | target of Projects/Decisions/Insights relations |
-| **🚀 Projects** | Active initiatives, status, owner, blockers | normalized `Name` | `Owner`, `Contributors` → People |
-| **✅ Decisions** | Durable decisions w/ rationale; status transitions | `Title` + `Decided on` | `Owner`, `Participants` → People; `Related projects` → Projects |
-| **💡 Insights** | Cross-cutting observations, auto-incrementing surface count | fuzzy `Title` + tag overlap | `Related people/projects/decisions` |
+| **👤 People** | Who works at Alpha + AI-synthesized context | `Email` | target of Projects/Decisions/Insights/Meetings/Goals relations |
+| **🚀 Projects** | Active initiatives, status, owner, blockers | normalized `Name` | `Owner`, `Contributors` → People; `Goals served` → Goals |
+| **✅ Decisions** | Durable decisions w/ rationale; status transitions | `Title` + `Decided on` | `Owner`, `Participants` → People; `Related projects` → Projects; `Source Meeting` → Meetings; `Related Goals` → Goals |
+| **💡 Insights** | Cross-cutting observations, auto-incrementing surface count | fuzzy `Title` + tag overlap | `Related people/projects/decisions`; `Source Meeting` → Meetings |
+| **🗓 Meetings** | Event backbone — attendees, context, outputs | `Title` + `Date` | `Attendees` → People; `Related Project` → Projects; `Related Student` → Students (Archive); produces Decisions + Insights |
+| **🎯 Goals** | Period-bounded company/team/individual goals | `Goal` + `Period` | `Owner` → People; `Related Projects` → Projects; `Related Decisions` → Decisions |
 
-Every write carries: `Source users` (emails), `Source` type, `Confidence`,
-`Created` / `Last updated`. Provenance is immutable.
+#### Archive (3 DBs, on-demand, permissioned)
 
-Write rules live in `packs/company-brain.md`. The four DB URLs are hardcoded
-in `NOTION-SYNC.md`.
+| DB | Purpose | Natural key | Access default |
+|---|---|---|---|
+| **🎓 Students / Families** | Scoped per-coach student roster | `Student Name` + `Coach` | **Default-deny**; assigned coach + Head of Coaching only |
+| **📘 Playbooks** | Pointer index — never SOP bodies | `Title` | Open-read, owner-write |
+| **📖 Glossary** | One-line company-specific terms | `Term` | Open-read, open-write |
+
+Every write carries: `Source users` / `Source User`, `Source` type,
+`Confidence` (Core-only), `Created` / `Last updated`. Provenance is
+immutable.
+
+Write rules live in `packs/company-brain.md`. The nine DB URLs are
+hardcoded in `NOTION-SYNC.md`.
 
 Every page is human-editable by the person accountable for that knowledge. The assistant only
 writes to Notion under promotion rules.
@@ -449,10 +495,21 @@ host that the assistant reads and walks the user through in conversation.
 - Onboarding path: Notion hub → download → 5-minute setup → productive.
 - Weekly brain review cadence (Tomás + Ops partner) for dedup / conflict resolution.
 
+### v1.6.0 — Bi-level AI Memory
+- Core gains **Meetings** + **Goals** DBs.
+- New **Archive** tier: **Students/Families** (scoped), **Playbooks**
+  (pointer index), **Glossary**.
+- Operating Principles removed from the Decisions seed — they stay in the
+  Operating Framework as doctrine.
+- `memory/brain-cache/` split into `core/` (short TTL) and `archive/`
+  (long TTL); Students never cached.
+
 ### v1.x — Growable surface
 - Community packs.
 - Opt-in local semantic search.
-- Teams + Meetings + Open Questions brain DBs.
+- Reassess Risks/Incidents + Open Questions DBs after 4 weeks of bi-level
+  usage — only ship if Insights are accumulating patterns that belong
+  elsewhere.
 - Brain-derived weekly owner digest (what's new about your projects / team).
 
 ## Design decisions (locked)

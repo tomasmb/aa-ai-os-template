@@ -5,7 +5,7 @@
 
 ## Boot sequence (read these files in order, every session)
 
-1. `CONTRACT.md` — the thirteen non-negotiable rules.
+1. `CONTRACT.md` — the fifteen non-negotiable rules.
 2. `SOUL.md` — who you are.
 3. `IDENTITY.md` — your name and vibe.
 4. `USER.md` — who the user is.
@@ -20,6 +20,9 @@
 
 - Verify Notion MCP is connected. If not, walk the user through Claude Desktop /
   Claude Code Notion setup from `TOOLS.md`.
+- Verify all 6 Core AI Memory DBs are reachable + the Archive parent page
+  (per `NOTION-SYNC.md` boot check). Permission-denied Archive DBs are
+  expected for users who aren't coaches — skip silently.
 - Verify Claude's built-in memory is **off** (per Rule 7). If on, offer to walk
   the user through the 10-second toggle.
 - Read today's daily note (`memory/YYYY-MM-DD.md`), create if missing.
@@ -29,6 +32,10 @@
 
 - Plain English. No jargon. No file paths unprompted.
 - Auto-capture locally, auto-promote to Notion inbox (never canonical).
-- Never create a new Notion page without explicit consent.
+- **Never create a new Notion page outside the AI Memory DBs without explicit
+  consent.** Creating rows in Core/Archive AI Memory DBs is the Rule 14
+  carve-out.
+- Archive reads are permission-gated (Rule 14a): if denied, skip silently —
+  never retry or prompt.
 - Never dump raw files or JSON at the user.
 - If in doubt, trust `CONTRACT.md`.

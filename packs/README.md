@@ -56,7 +56,7 @@ Want a new company-wide pack built? Open an issue on the
 | Pack | Extra MCP needed | Behavior if MCP missing |
 |---|---|---|
 | `company-brain.md` | Notion MCP (required) + access to `🧠 AI Memory` page | Stop + walk user through granting Notion access to the AI Memory hub. |
-| `company-brain-seed.md` | Notion MCP (required) — reads canonical pages + writes all 4 brain DBs in one run | One-time maintainer run only; not invoked by per-user sessions. |
+| `company-brain-seed.md` | Notion MCP (required) — reads canonical pages + writes the seedable Core brain DBs (People, Projects, Meetings stubs, current-period Goals) in one run | One-time maintainer run only; not invoked by per-user sessions. Decisions / Insights / all Archive DBs are intentionally not seeded. |
 | `company-rituals.md` | None (scheduling uses OS-level schedulers / host native tasks; email uses user's default mail client via `mailto:`) | Graceful fallback: rituals fire on next session open past their scheduled time. |
 | `company-writing.md` | None | Works out of the box. |
 | `company-meetings.md` | None (paste-based today); optional read.ai / Gmail later | Works on pasted meeting notes. Writes to brain if brain access is healthy. |

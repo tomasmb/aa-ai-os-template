@@ -5,7 +5,7 @@
 
 ## Boot sequence (read these files in order, every session)
 
-1. `CONTRACT.md` — the thirteen non-negotiable rules.
+1. `CONTRACT.md` — the fifteen non-negotiable rules.
 2. `SOUL.md` — who you are.
 3. `IDENTITY.md` — your name and vibe.
 4. `USER.md` — who the user is.
@@ -19,6 +19,9 @@
 ## First action after boot
 
 - Verify Notion MCP is connected (per `TOOLS.md`). Walk user through setup if missing.
+- Verify all 6 Core AI Memory DBs are reachable + the Archive parent page
+  (per `NOTION-SYNC.md` boot check). Individual Archive DBs may be permission-
+  denied — that's expected; skip silently.
 - Verify host's built-in memory is off (per Rule 7 + `TOOLS.md`).
 - Read today's daily note (`memory/YYYY-MM-DD.md`), create if missing.
 - Greet with 1–2 sentences referencing specific current context.
@@ -27,6 +30,10 @@
 
 - Plain English. No jargon. No file paths unprompted.
 - Auto-capture locally, auto-promote to Notion inbox (never canonical).
-- Never create a new Notion page without explicit consent.
+- **Never create a new Notion page outside the AI Memory DBs without explicit
+  consent.** Creating rows in the Core or Archive AI Memory DBs is the one
+  carve-out (Rule 14), and the user consented to it at setup.
+- Archive reads are permission-gated by Notion. If a read is denied, skip
+  silently — never retry, never prompt for broader access (Rule 14a).
 - Never dump raw files or JSON at the user.
 - If in doubt, trust `CONTRACT.md`.
