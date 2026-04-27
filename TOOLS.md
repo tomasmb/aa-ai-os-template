@@ -1,133 +1,130 @@
-# TOOLS.md — MCPs I expect, plus per-host setup
+# TOOLS.md — Tools the assistant relies on, plus per-host setup
 
-> The assistant reads this file at every session start to verify MCP availability.
-> If a required MCP isn't connected, the assistant walks the user through the
-> right setup for their tool (plain English, one step at a time). Never shows
-> this file to the user directly.
+> The assistant reads this file at every session start to verify tool availability.
+> If a required tool is missing, walk the user through setup in plain English.
+> Never show this file to the user directly.
 
-## Required MCPs
+## Required tools
 
-- **Notion MCP** — mandatory. Read + conservative write to the company brain.
+- **git** — read + write the KB repo and this assistant repo. Mandatory.
+- **gh CLI** — GitHub authentication + repo access. Mandatory for first-run
+  bootstrap; the daily flow can use cached credentials after that.
 
-## Recommended MCPs (unlock specific packs)
+Both are installed by `scripts/install` per OS (Homebrew, apt/dnf/pacman,
+winget). Detail in `setup/macos.md`, `setup/linux.md`, `setup/windows.md`.
+
+The KB read path is purely local (`rg` over the sibling clone). The KB write
+path is `scripts/promote`, which wraps `git pull --rebase → write → commit
+→ push` atomically.
+
+## Recommended (optional) MCPs — unlock specific packs
+
+These are **not required**. The brain works without them. They unlock
+specific packs:
 
 - **Google Calendar MCP** — unlocks `packs/company-scheduling.md`. Strongly
-  recommended for new hires (day-1 scheduling is the highest-leverage use case).
-- **Google Mail MCP** (optional) — enables richer invite bodies + follow-up
-  detection. Not required; the scheduling pack works with Calendar-only.
-- **GitHub MCP** — for linking PRs into memory (useful for engineers).
-- **Linear / Jira MCP** — for project state (useful for PMs).
+  recommended for new hires (day-1 scheduling is the highest-leverage use).
+- **Google Mail MCP** (optional) — enables richer invite bodies and follow-up
+  detection.
+- **GitHub MCP** (optional) — useful for engineers linking PRs into Insights.
+  The assistant does NOT need this MCP for KB git operations — it uses the
+  `git` CLI directly.
 
-## Not required — email digest uses the user's default client
+## Not required — email digest uses the user's default mail client
 
 The weekly owner digest (Contract §15 / `packs/company-rituals.md`) is
 **email-only** and requires **no MCP**. The assistant composes the digest
-locally, opens a pre-filled `mailto:` link in the user's default mail
-client, and the user hits send. Power users can opt into SMTP via
-`digests.smtp_enabled` in `WORKSTYLE.md` — still no MCP, just local SMTP.
+locally, opens a pre-filled `mailto:` link, the user hits send. Power users
+can opt into SMTP via `digests.smtp_enabled` in `WORKSTYLE.md` — still no MCP.
 
-**Google Chat MCP, Slack MCP, Teams MCP are not used by v1.** The folder
-stays lean on required tools. If Alpha later builds a Google Chat digest
-path, it lands as an opt-in pack extension — never a requirement.
+**Slack MCP, Teams MCP, Google Chat MCP are not used by v2.0.0.** The folder
+stays lean. If Alpha later builds a Slack digest path, it ships as an opt-in
+pack — never a requirement.
 
-## Notion MCP setup by host
+## Git + gh CLI setup by host
+
+Setup is run once by `scripts/install` and `scripts/bootstrap`. The assistant
+verifies on every boot via `scripts/preflight`. Manual steps below are only
+for users who skipped the installer.
+
+### Claude Desktop (recommended)
+
+Claude Desktop doesn't run shell commands itself. The user runs the one-line
+installer in their Terminal/PowerShell **once**:
+
+- macOS / Linux: `curl -fsSL https://raw.githubusercontent.com/alphaanywhere/aa-ai-os-template/main/scripts/install.sh | bash`
+- Windows: `iwr https://raw.githubusercontent.com/alphaanywhere/aa-ai-os-template/main/scripts/install.ps1 -useb | iex`
+
+Then they open `~/Alpha AI OS/alpha-assistant` as a Claude Desktop project.
+The assistant invokes `scripts/preflight` and `scripts/sync-kb` as part of
+its boot sequence (Rules 17 + 16) by reading the script outputs through the
+filesystem tool. If `scripts/preflight` reports missing tools or auth, the
+assistant tells the user the one-line command to run in their shell.
+
+### Cursor
+
+Same one-line installer as Claude Desktop. Cursor opens the
+`~/Alpha AI OS/alpha-assistant` folder. The assistant runs scripts via
+Cursor's built-in shell when the user asks (Cursor exposes shell exec).
+
+### Claude Code (CLI)
+
+`cd ~/Alpha\ AI\ OS/alpha-assistant && claude` after the one-line installer.
+Claude Code runs the scripts directly via its shell tool.
+
+### Codex CLI
+
+`cd ~/Alpha\ AI\ OS/alpha-assistant && codex` after the one-line installer.
+Same shell-exec story.
+
+### openclaw
+
+The one-line installer is run in a regular Terminal. openclaw then opens
+the assistant folder. Scripts run via openclaw's shell tool.
+
+## GitHub authentication
+
+`scripts/bootstrap` runs `gh auth login --web` once. After auth:
+
+- `gh api user` captures the user's GitHub username + primary email.
+- `git config --global user.name` / `user.email` are set if unset.
+- `gh repo clone alphaanywhere/alpha-anywhere-kb` lands the KB sibling.
+- On 403/404 (not in org yet), `memory/kb-status.md` = `pending` and the
+  assistant runs partial onboarding until access lands.
+
+## Google Calendar MCP setup by host (optional)
+
+Only triggered when `packs/company-scheduling.md` activates (e.g. *"schedule
+a 1-1 with X"*). Never nag otherwise.
 
 ### Claude Desktop
 
-1. Open Claude Desktop → Settings → Connectors (or Extensions).
-2. Search for "Notion" and click Install.
-3. In the browser window that opens, click "Connect to Notion" and approve.
+1. Settings → Connectors. Search "Google Calendar". Install.
+2. Approve OAuth in browser with the user's `@2hourlearning.com` account.
+3. Grant **read free/busy** + **create events** scopes only.
 4. Restart Claude Desktop once.
 
-**Assistant verifies connection by calling `notion-search` with a trivial query.**
+### Cursor / Claude Code / Codex CLI
 
-### Cursor
-
-1. Open Cursor → Settings → Features → Model Context Protocol.
-2. Click "Add MCP Server".
-3. Preferred: hosted — name `notion`, URL `https://mcp.notion.com`, type `streamable-http`.
-4. Approve the OAuth prompt.
-5. Reload the Cursor window.
-
-### Claude Code (CLI)
-
-1. Edit `~/.claude/mcp.json` (create if missing).
-2. Add an entry for Notion pointing at `https://mcp.notion.com` with OAuth.
-3. Restart the Claude Code session.
-
-### Codex CLI
-
-1. Edit `~/.codex/config.toml`.
-2. Add a `[mcp_servers.notion]` block pointing at the hosted Notion MCP.
-3. Restart Codex.
+Standard MCP server config. Use a community Google Calendar MCP. Approve OAuth.
+Reload host.
 
 ### openclaw
 
-- Already configured via the `plugin-notion-workspace-notion` plugin. No action
-  needed — the assistant verifies tool availability and proceeds.
-
-## Google Calendar MCP setup by host
-
-> The assistant activates this walkthrough the first time the user says anything
-> that triggers `packs/company-scheduling.md` (e.g. *"schedule a 1-1 with X"*) —
-> or when a new-hire checklist item requires scheduling. Never nag otherwise.
-
-### Claude Desktop
-
-1. Open Claude Desktop → Settings → Connectors.
-2. Search for "Google Calendar" and click Install. (Google Workspace connector
-   also enables it; either works.)
-3. Approve OAuth in the browser — sign in with your `@2hourlearning.com`
-   account.
-4. Grant **read free/busy** + **create events** scopes. Other scopes are not
-   needed.
-5. Restart Claude Desktop once.
-
-**Assistant verifies connection by querying free/busy on the user's own
-calendar for the next hour.**
-
-### Cursor
-
-1. Settings → Features → Model Context Protocol → Add MCP Server.
-2. Use a community Google Calendar MCP (e.g. `@modelcontextprotocol/gcal` or
-   a Workspace-connected variant). Paste the config snippet from the MCP's
-   README.
-3. Approve OAuth.
-4. Reload Cursor.
-
-### Claude Code (CLI)
-
-1. Edit `~/.claude/mcp.json`.
-2. Add a Google Calendar entry (OAuth-based; follow the MCP's README).
-3. Run `claude mcp login google-calendar` and complete OAuth.
-4. Restart the session.
-
-### Codex CLI
-
-1. Edit `~/.codex/config.toml`.
-2. Add `[mcp_servers.google_calendar]` per the MCP's setup docs.
-3. Run the auth flow, restart Codex.
-
-### openclaw
-
-1. The calendar MCP is expected to be installed via the workspace's plugin
-   manager.
-2. Confirm availability and proceed.
+Configured via the workspace plugin manager. Confirm availability.
 
 ### Required OAuth scopes
-
-Only these — nothing else is needed:
 
 - `https://www.googleapis.com/auth/calendar.freebusy` — read free/busy.
 - `https://www.googleapis.com/auth/calendar.events` — create / update events
   the assistant authors.
 
 **Not requested:** reading event contents (titles, descriptions, attendees of
-other people's events). Free/busy is enough.
+other people's events).
 
 ## Ritual scheduling by host (Contract §15)
 
-See `rituals/README.md` for full setup. Summary:
+See `rituals/README.md` for full setup.
 
 | Host | Native scheduling | Fallback |
 |---|---|---|
@@ -137,26 +134,23 @@ See `rituals/README.md` for full setup. Summary:
 | Codex CLI | OS (launchd / cron / Task Scheduler) | Session-open trigger |
 | openclaw | OS (launchd / cron / Task Scheduler) | Session-open trigger |
 
-Setup runs once, during onboarding Block 7.5. The assistant generates the
-config from `rituals/launchd/*.template`, `rituals/cron/*.template`, or
-`rituals/windows/*.template` and installs it with the user's one-word
-confirmation. No admin rights required.
+Setup runs once during onboarding Block 7.5. Generated from
+`rituals/launchd/*.template`, `rituals/cron/*.template`, or
+`rituals/windows/*.template`. No admin rights required.
 
-**Graceful fallback:** even without a scheduler, rituals fire on the next
-session open past their configured time. Users who skip setup still get
-rituals; latency is just slightly worse.
+**Graceful fallback:** rituals fire on the next session open past their
+configured time even without a scheduler.
 
 ## Host memory — turn it OFF
 
-The assistant runs on this folder's memory. A second memory system (Claude's
-built-in, Cursor's memory, etc.) creates conflicts. At first run, the assistant
-detects and walks the user through disabling:
+The assistant runs on this folder's memory + the KB. A second memory system
+(Claude's built-in, Cursor's memory, etc.) creates conflicts.
 
 ### Claude Desktop
-Settings → Memory → toggle **off**. Takes 10 seconds.
+Settings → Memory → toggle **off**. ~10 seconds.
 
 ### Claude Code / Claude.ai
-Same Memory toggle in the account settings page.
+Same Memory toggle in account settings.
 
 ### Cursor
 Settings → Features → Memory → toggle **off**.
@@ -166,10 +160,11 @@ No built-in memory. Nothing to disable.
 
 ## Failure policy
 
-- **Required MCP missing** (Notion) → stop and walk the user through setup
-  before proceeding with the session.
-- **Recommended MCP missing** (Google Calendar) → proceed silently. Only
-  mention it when the user triggers a pack that needs it, then offer to set
-  it up. Never nag.
-- **Any optional MCP missing** → proceed silently.
-- Never fabricate a response when a required MCP is unreachable. Say so plainly.
+- **git missing or `scripts/preflight` red** → stop and walk the user through
+  `scripts/install` (or the manual fallback for their OS) before proceeding.
+- **gh auth missing** → walk the user through `gh auth login --web`.
+- **KB clone missing or 403/404** → write `memory/kb-status.md` = `pending`,
+  run partial onboarding, recheck on every boot.
+- **Recommended MCP missing** (Google Calendar) → proceed silently. Mention
+  only when a triggering pack activates. Never nag.
+- Never fabricate a response when a required tool is unreachable. Say so plainly.

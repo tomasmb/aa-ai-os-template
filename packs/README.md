@@ -14,38 +14,33 @@
 
 | Type | Owner | Filename pattern |
 |---|---|---|
-| **Company-wide** | Alpha central | `company-*.md` — overwritten on `/update` |
-| **Team** | team lead | `team-<team-name>.md` — protected within team |
-| **Personal** | the user | `personal-*.md` — never touched by `/update` |
+| **Company-wide** | Alpha central | `company-*.md` — protected; daily git pull updates them |
+| **Team** | team lead | `team-<team-name>.md` — gitignored; user-editable |
+| **Personal** | the user | `personal-*.md` — gitignored; user-editable |
 
 ## Getting more packs
 
-New packs ship with each template release. Run `/update` to get the latest
-versions of the `company-*.md` packs (protected — overwritten on update) and
-pick up any new ones. Team and personal packs are never touched.
-
-Want a new company-wide pack built? Open an issue on the
-[template repo](https://github.com/tomasmb/aa-ai-os-template).
+New packs ship with each release of `aa-ai-os-template`. The morning ritual
+runs `git pull --rebase` daily, so `company-*.md` packs stay current
+automatically. Team and personal packs are gitignored, so updates never touch
+them.
 
 ## Recommended first packs
 
 - `company-brain.md` — **the shared knowledge graph** (Contract §14). Share-
-  by-default writes to Notion's People / Projects / Decisions / Insights
-  databases. Every other pack that surfaces facts routes through here.
-  **Ships by default. Foundational.**
-- `company-brain-seed.md` — **one-time bulk seed** of the brain from existing
-  canonical Notion content (Team directory → People, Operating Framework →
-  foundational Decisions, active project pages → Projects). Maintainer runs
-  once at rollout. **Ships by default. Foundational.**
+  by-default writes to the KB's `core/` and `archive/` folders via
+  `scripts/promote`. Every other pack that surfaces facts routes through
+  here. **Ships by default. Foundational.**
+- `company-brain-seed.md` — **one-time bulk seed** of the brain (maintainer
+  run; not invoked per-user). Ships by default. Foundational.
 - `company-rituals.md` — **the proactive rhythm** (Contract §15). Morning
-  check-in, end-of-day wrap, weekly review + email owner digest. Turns the
-  assistant from a tool you open into a colleague who comes to you. **Ships
-  by default. Foundational.**
+  check-in (runs `scripts/sync-kb`), end-of-day wrap, weekly review + email
+  owner digest. **Ships by default. Foundational.**
 - `company-writing.md` — Alpha's writing voice + structure. **Ships by default.**
-- `company-meetings.md` — meeting prep + post-meeting ingest (read.ai-ready).
-  Writes Decisions + Insights to the brain. **Ships by default.**
-- `company-scheduling.md` — 1-1 and meeting scheduling via Google Calendar +
-  Notion Team directory. Updates People rows on scheduled 1-1s. **Ships by
+- `company-meetings.md` — meeting prep + post-meeting ingest. Writes
+  Decisions + Insights to the brain. **Ships by default.**
+- `company-scheduling.md` — 1-1 and meeting scheduling via Google Calendar
+  MCP. Updates `core/people/<slug>.md` rows on scheduled 1-1s. **Ships by
   default.** Unlocks once the user connects Google Calendar MCP.
 - `team-<your-team>.md` — team-specific rituals and workflows. Build your
   own or ask the maintainer to ship a shared one in the next release.
@@ -55,12 +50,12 @@ Want a new company-wide pack built? Open an issue on the
 
 | Pack | Extra MCP needed | Behavior if MCP missing |
 |---|---|---|
-| `company-brain.md` | Notion MCP (required) + access to `🧠 AI Memory` page | Stop + walk user through granting Notion access to the AI Memory hub. |
-| `company-brain-seed.md` | Notion MCP (required) — reads canonical pages + writes the seedable Core brain DBs (People, Projects, Meetings stubs, current-period Goals) in one run | One-time maintainer run only; not invoked by per-user sessions. Decisions / Insights / all Archive DBs are intentionally not seeded. |
-| `company-rituals.md` | None (scheduling uses OS-level schedulers / host native tasks; email uses user's default mail client via `mailto:`) | Graceful fallback: rituals fire on next session open past their scheduled time. |
-| `company-writing.md` | None | Works out of the box. |
-| `company-meetings.md` | None (paste-based today); optional read.ai / Gmail later | Works on pasted meeting notes. Writes to brain if brain access is healthy. |
-| `company-scheduling.md` | **Google Calendar MCP** | Assistant offers to set it up the first time the user triggers the pack. |
+| `company-brain.md` | None — uses `git` + `scripts/promote` directly | Pending KB access → personal-only mode (per Rule 17) |
+| `company-brain-seed.md` | None | Maintainer-run only; not invoked by per-user sessions |
+| `company-rituals.md` | None — scheduling via OS schedulers; email via `mailto:` | Graceful fallback: rituals fire on next session open past schedule |
+| `company-writing.md` | None | Works out of the box |
+| `company-meetings.md` | None (paste-based) | Works on pasted notes; queues KB writes if KB unreachable |
+| `company-scheduling.md` | **Google Calendar MCP** | Assistant offers setup on first trigger |
 
 ## Removing a pack
 

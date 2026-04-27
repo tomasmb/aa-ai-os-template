@@ -88,9 +88,11 @@ rules (9 → canon inboxes, 14 → AI Memory DBs, 4 → local memory).
    same question → merge or retire.
 4. **Canon is never mirrored.** Operating Principles, Team directory rows,
    SOP bodies stay at their canonical source.
-5. **Core loads every session; Archive loads on demand.** Differential
-   caching in `memory/brain-cache/` (`core/` short TTL, `archive/` long TTL,
-   Students never cached).
+5. **Core loads every session; Archive loads on demand.** Both live in the
+   sibling KB git clone (`alpha-anywhere-kb/`) and are read directly via
+   `rg` over local files — no separate cache layer (dropped in v2.0.0
+   because `rg` over a local clone is fast enough that a cache only adds
+   staleness risk).
 
 ## Folder contract
 
@@ -151,7 +153,6 @@ alpha-assistant/
     learnings.md                 things learned from outcomes
     onboarding-progress.md       mid-onboarding recovery state (new hires only)
     meetings/                    one file per meeting, structured header + raw notes
-    brain-cache/                 locally cached brain rows (core/ + archive/ namespaces) — v1.6
     sensitivity-log.md           audit of ask-first decisions and forgets — v1.3
     rituals-log.md               audit of ritual fires + engagement — v1.4
     templates/                   scaffolds the assistant fills in
@@ -501,8 +502,9 @@ host that the assistant reads and walks the user through in conversation.
   (pointer index), **Glossary**.
 - Operating Principles removed from the Decisions seed — they stay in the
   Operating Framework as doctrine.
-- `memory/brain-cache/` split into `core/` (short TTL) and `archive/`
-  (long TTL); Students never cached.
+- v2.0.0 removes `memory/brain-cache/` entirely — the KB git clone is
+  read directly via `rg` (fast + always fresh, no cache invalidation
+  risk).
 
 ### v1.x — Growable surface
 - Community packs.

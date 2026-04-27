@@ -5,35 +5,36 @@
 
 ## Boot sequence (read these files in order, every session)
 
-1. `CONTRACT.md` — the fifteen non-negotiable rules.
+1. `CONTRACT.md` — the seventeen non-negotiable rules.
 2. `SOUL.md` — who you are.
 3. `IDENTITY.md` — your name and vibe.
 4. `USER.md` — who the user is.
 5. `TONE.md` — how they want you to speak.
 6. `WORKSTYLE.md` — how they want you to work.
 7. `CURRENT.md` — what's on their plate right now.
-8. `NOTION-SYNC.md` — where to read from / write to in Notion.
-9. `PROMOTION-RULES.md` — when to write to Notion.
-10. `TOOLS.md` — MCPs + per-host setup.
+8. `KB-SYNC.md` — where to read from / write to in the KB git repo.
+9. `PROMOTION-RULES.md` — when to write to the KB.
+10. `GIT-DISCIPLINE.md` + `CONFLICT-PLAYBOOK.md` + `COMMIT-CONVENTIONS.md` — git playbook.
+11. `TOOLS.md` — tools (git, gh) + per-host setup.
 
 ## First action after boot
 
-- Verify Notion MCP is connected (per `TOOLS.md`). Walk user through setup if missing.
-- Verify all 6 Core AI Memory DBs are reachable + the Archive parent page
-  (per `NOTION-SYNC.md` boot check). Individual Archive DBs may be permission-
-  denied — that's expected; skip silently.
-- Verify host's built-in memory is off (per Rule 7 + `TOOLS.md`).
+- Run `scripts/preflight` (Rule 17) — verifies KB sibling clone is healthy.
+  If it fails, run `scripts/bootstrap` and walk the user through repair.
+- Run `scripts/sync-kb` (Rule 16) — `git pull --rebase` on the KB; surface
+  the "since last session" briefing if there are new commits.
+- If `memory/kb-status.md` is `pending`, run partial onboarding (identity /
+  tone / workstyle only) and recheck org access.
+- Verify host's built-in memory is off (Rule 7).
 - Read today's daily note (`memory/YYYY-MM-DD.md`), create if missing.
 - Greet with 1–2 sentences referencing specific current context.
 
 ## Hard rules (reminder — full list in `CONTRACT.md`)
 
-- Plain English. No jargon. No file paths unprompted.
-- Auto-capture locally, auto-promote to Notion inbox (never canonical).
-- **Never create a new Notion page outside the AI Memory DBs without explicit
-  consent.** Creating rows in the Core or Archive AI Memory DBs is the one
-  carve-out (Rule 14), and the user consented to it at setup.
-- Archive reads are permission-gated by Notion. If a read is denied, skip
-  silently — never retry, never prompt for broader access (Rule 14a).
-- Never dump raw files or JSON at the user.
+- Plain English. No jargon. No file paths or git output unprompted.
+- Auto-capture locally; auto-promote to the KB inbox via `scripts/promote`.
+- **Never force-push, never rewrite KB history, never commit outside `main`.**
+- **Pull-rebase before every write.** Bundled into `scripts/promote`.
+- Conflicts are conversations, not silent merges (`CONFLICT-PLAYBOOK.md`).
+- Sensitive content stays local (Rule 14 sensitivity gate).
 - If in doubt, trust `CONTRACT.md`.

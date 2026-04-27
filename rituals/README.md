@@ -119,9 +119,15 @@ The assistant recognizes the tag and:
 
 1. Skips the standard greeting (Rule 2 step 5).
 2. Skips the interactive personalization loop.
-3. Executes the named ritual flow from `packs/company-rituals.md`.
-4. Logs the outcome to `memory/rituals-log.md`.
-5. Returns control — either the user engages with the offer, or the session
+3. Runs `scripts/preflight` then `scripts/sync-kb` so the ritual operates
+   on a fresh KB (Contract Rules 16 + 17). On red, the ritual logs the
+   failure and exits silently — never half-runs against a stale brain.
+4. **Pulls the assistant repo** with `git -C <ASSISTANT_DIR> pull --rebase
+   --autostash` so daily updates land without prompting (replaces v1's
+   zip-download flow).
+5. Executes the named ritual flow from `packs/company-rituals.md`.
+6. Logs the outcome to `memory/rituals-log.md`.
+7. Returns control — either the user engages with the offer, or the session
    closes cleanly.
 
 ## Logs
@@ -169,3 +175,28 @@ rituals/
 
 Templates use placeholders: `<AI_OS_FOLDER>`, `<HH>`, `<MM>`, `<USER_EMAIL>`.
 The assistant fills these in per-user before writing the final files.
+
+## Pre-step: every ritual syncs the KB before it runs
+
+Whether triggered by a host scheduler, an OS scheduler, or the graceful
+fallback, every ritual entry point runs the same two commands first:
+
+```bash
+"<AI_OS_FOLDER>/scripts/preflight"   # Contract Rule 17 — KB clone health
+"<AI_OS_FOLDER>/scripts/sync-kb"      # Contract Rule 16 — pull --rebase
+```
+
+(PowerShell hosts run the `.ps1` siblings.) Both are idempotent and fast
+(~1s on green). If either exits non-zero, the ritual logs
+`<ts> <name> skipped: kb-unhealthy` to `memory/rituals-log.md` and exits
+silently — proactive output against a stale or broken brain is worse
+than no output. The assistant surfaces the missed ritual on next manual
+session boot via the standard "since-last-session" briefing.
+
+The **morning** ritual additionally runs `scripts/sync-assistant`
+**before** preflight + sync-kb. This is the daily auto-update path for
+the assistant repo itself: a `git pull --rebase --autostash` against
+`alphaanywhere/aa-ai-os-template`. Result: every morning, users get the
+latest Contract, packs, scripts, and templates with no manual action and
+no zip downloads. EOD and weekly rituals do **not** repull the assistant
+repo (one pull per day is enough; intra-day updates are uncommon).

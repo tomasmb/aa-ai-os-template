@@ -1,0 +1,56 @@
+# onboarding/team.md — This user's team context
+
+> Populated by the assistant after the user answers "What team/department
+> are you on?" during first-run setup. Pulled from the KB. **Edit the KB
+> markdown, not this file** — the local copy refreshes on each
+> `scripts/sync-kb` run.
+
+## Source of truth
+
+- **People in the KB:** `core/people/` (one file per person).
+- **Team rows in the KB:** `core/teams/<team-slug>.md` — lean row with
+  lead, members, mission. Departments mirror the new-hire flow:
+  Product, Marketing, Program Advisor, Coaching, Parent Experience,
+  Academics, Ops, Life Skills.
+- **Long-form team pages:** `archive/teams/<team-slug>.md` — mission
+  detail, current OKRs, rituals, norms.
+- **User's team:** *(filled during setup — slug matching one of
+  `core/teams/`)*
+- **User's team file paths:** *(filled during setup — both the core row
+  and the archive page)*
+
+## What gets cached here
+
+### The team in one sentence
+*(filled automatically from `core/teams/<team-slug>.md` `mission` field
+or first body line)*
+
+### Members + their owned areas
+*(filled from `core/people/` rows where `team == <user-team>`. Each
+member's `owns` list / role gives the area.)*
+
+### Current projects / OKRs
+*(filled from `core/projects/` rows where `team == <user-team>` and
+`status` ∈ `active`/`planned`. Goal context from `core/goals/`.)*
+
+### Rituals + cadences
+*(standup day, demo day, review cadence — filled from the
+`archive/teams/<team-slug>.md` "Rituals" section)*
+
+### Team norms
+*(writing norms, review rules, on-call / pager policy — filled from the
+`archive/teams/<team-slug>.md` "Norms" section)*
+
+## Refresh cadence
+
+- **On every session start:** after `scripts/sync-kb`, if any commit
+  since last sync touched `core/people/`, `core/teams/<team-slug>.md`,
+  `archive/teams/<team-slug>.md`, `core/projects/` (filtered by team),
+  or `core/goals/` (filtered by team) → re-cache.
+- **On role/team change the user mentions:** ask the gate question,
+  swap team, re-cache. Also promote the change to the user's
+  `core/people/<gh-username>.md` row.
+
+## Last synced
+
+*(auto — timestamp + last-seen commit SHA)*

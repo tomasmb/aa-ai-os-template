@@ -5,6 +5,12 @@
 #   eod      — weekdays at HH:MM
 #   weekly   — Fridays at HH:MM
 #
+# Each task runs scripts/preflight + scripts/sync-kb (Contract Rules 16 + 17)
+# *before* opening the AI tool, so the ritual always operates on a fresh
+# KB. If either pre-step fails the trigger short-circuits and the next
+# manual session surfaces the missed ritual via the standard
+# "since-last-session" briefing.
+#
 # The assistant writes and runs this for you during onboarding. Placeholders
 # <HH>, <MM>, <EOD_HH>, <EOD_MM>, <WK_HH>, <WK_MM>, <WEEKDAY>, <AI_OS_FOLDER>
 # are filled from WORKSTYLE.md + USER.md before execution.
@@ -14,6 +20,7 @@
 
 $AIOSFolder = "<AI_OS_FOLDER>"
 $Tool       = "C:\Program Files\Claude\Claude.exe"   # adjust per-host
+$Pwsh       = "powershell.exe"
 
 function Register-RitualTask {
     param(
@@ -22,8 +29,25 @@ function Register-RitualTask {
         [string]$Time,
         [string[]]$Days
     )
-    $action   = New-ScheduledTaskAction -Execute $Tool `
-                -Argument "--message `"/ritual $Tag — run for $AIOSFolder`""
+    # Wrapper: preflight && sync-kb && open AI tool with the ritual message.
+    # Failure of either pre-step short-circuits without opening the tool.
+    $syncAsst  = Join-Path $AIOSFolder 'scripts\sync-assistant.ps1'
+    $preflight = Join-Path $AIOSFolder 'scripts\preflight.ps1'
+    $syncKb    = Join-Path $AIOSFolder 'scripts\sync-kb.ps1'
+    $logOut    = Join-Path $AIOSFolder ("logs\ritual-$Tag.out.log")
+    $logErr    = Join-Path $AIOSFolder ("logs\ritual-$Tag.err.log")
+    # The morning ritual is the canonical place for the daily assistant-repo
+    # pull (sync-assistant) so users always boot against fresh Contract / packs.
+    $cmd = @"
+if ('$Tag' -eq 'morning') { & '$syncAsst'; if (`$LASTEXITCODE -ne 0) { exit 1 } }
+& '$preflight'
+if (`$LASTEXITCODE -ne 0) { exit 1 }
+& '$syncKb'
+if (`$LASTEXITCODE -ne 0) { exit 1 }
+Start-Process -FilePath '$Tool' -ArgumentList '--message','/ritual $Tag — run for $AIOSFolder'
+"@
+    $argList = "-NoProfile -ExecutionPolicy Bypass -Command `"$cmd`" *> `"$logOut`" 2> `"$logErr`""
+    $action   = New-ScheduledTaskAction -Execute $Pwsh -Argument $argList
     $trigger  = New-ScheduledTaskTrigger -Weekly -DaysOfWeek $Days -At $Time
     $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries `
                 -DontStopIfGoingOnBatteries -StartWhenAvailable

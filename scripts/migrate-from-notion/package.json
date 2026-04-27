@@ -1,0 +1,19 @@
+{
+  "name": "alpha-migrate-from-notion",
+  "version": "0.1.0",
+  "private": true,
+  "description": "One-time, maintainer-run migration from Notion to alpha-anywhere-kb.",
+  "type": "module",
+  "scripts": {
+    "inventory": "node inventory.mjs",
+    "write": "node write.mjs",
+    "validate": "node validate.mjs"
+  },
+  "dependencies": {
+    "@notionhq/client": "^2.2.15",
+    "js-yaml": "^4.1.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

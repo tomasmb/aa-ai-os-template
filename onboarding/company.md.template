@@ -1,0 +1,51 @@
+# onboarding/company.md — Alpha Anywhere context cache
+
+> The assistant reads Alpha's canonical KB pages and caches a compact
+> summary here so it has company context in every session without
+> re-reading the full files. **Edit the KB markdown, not this file** —
+> the local copy refreshes automatically on each `scripts/sync-kb` run.
+
+## Canonical sources in the KB
+
+| File | What it tells you | KB path |
+|---|---|---|
+| **Operating Framework** | How Alpha works — decision norms, rituals, operating cadence | `operating-framework/README.md` (entry point; sub-files linked from it) |
+| **Team directory** | Who works at Alpha, their roles, what they own | `core/people/` (one file per person) + `archive/teams/<team>.md` |
+| **New Hire Onboarding plans** | Per-employee onboarding plans. Used for new hires only. | `archive/onboarding/<email-slug>.md` |
+| **Department templates** | Department-specific onboarding scaffolds | `archive/onboarding/_templates/` |
+
+## What gets cached here after first session
+
+After the first real session, this file holds a compact summary the
+assistant maintains itself:
+
+### Mission (one paragraph, from Operating Framework)
+*(filled automatically)*
+
+### How Alpha decides (from Operating Framework)
+*(filled automatically)*
+
+### Rituals + cadences (from Operating Framework)
+*(filled automatically)*
+
+### Glossary — abbreviations & internal terms
+*(filled automatically — growable as the user encounters new terms)*
+
+### Who's who — leaders + scope (from `core/people/`)
+*(filled automatically — top-of-funnel only, full list lives in
+`core/people/`. Filter by `role` containing `lead`/`director`/`head`
+or by being listed as `lead` on a `core/teams` row.)*
+
+## Refresh cadence
+
+- **On every session start:** after `scripts/sync-kb`, compare the most
+  recent commit touching `operating-framework/`, `core/people/`, or
+  `core/teams/` against the timestamp written below. If newer, re-cache.
+- **On demand:** user says *"refresh Alpha context"* → re-cache all
+  sources above.
+- **Monthly:** full re-cache regardless, to absorb additions.
+
+## Last synced
+
+*(auto — timestamp + last-seen commit SHA written after each successful
+sync)*

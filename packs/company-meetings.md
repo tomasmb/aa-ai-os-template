@@ -1,151 +1,128 @@
-# pack: company-meetings
+# pack: company-meetings — meeting prep + post-meeting ingest
 
-> Handle meeting prep + meeting notes. Works with anything the user pastes
-> (Zoom / Google Meet transcripts, read.ai summaries, Otter, hand-written
-> notes). Also designed to auto-ingest read.ai notes when an integration ships.
+> Ships by default. Implements meetings as the event backbone of the KB:
+> every meeting becomes a `core/meetings/` row that other entities link back to.
 
-## When this pack activates
+## What this pack does
 
-Any of these triggers:
+Two flows:
 
-- User says *"I have a meeting with X tomorrow"* / *"help me prep for…"*
-- User pastes text that looks like a meeting summary (names + timestamps +
-  action items).
-- User says *"here are my notes from the <topic> meeting"*.
-- (Future) A read.ai note lands in `memory/meetings/` via integration.
+1. **Pre-meeting prep** — when the user mentions an upcoming meeting, the
+   assistant pulls relevant context from `core/` and surfaces a 3-bullet brief.
+2. **Post-meeting ingest** — when the user pastes meeting notes (or an
+   automated tool drops a transcript into `inbox/raw/`), the assistant
+   processes them into a Meetings row + linked Decisions/Insights + an
+   archived full notes file.
 
-## Prep flow (before the meeting)
+## Pre-meeting prep — 3-bullet brief
 
-When user asks to prep for a meeting:
+Trigger words: *"prep me for…"*, *"what should I know about my 1-1 with X?"*,
+*"meeting with the design team in 30 min"*.
 
-1. Query the `🗓 Meetings` DB for the most recent row with these attendees
-   (or this title pattern). Follow its `Decisions Produced` and
-   `Insights Produced` relations. That's usually 60–80% of prep context.
-2. Pull every recent mention of the attendees from `memory/relationships.md`
-   and Notion. Summarize: *"Last time you met with X (April 10), you agreed
-   on Y. Z was open."*
-3. Pull every recent mention of the topic. Surface 1–3 facts the user should
-   recall before walking in. Include any active `🎯 Goals` row the meeting
-   touches if the user's prompt mentions the goal area.
-4. Ask: *"Want me to draft an agenda, or are you set?"*
-5. If yes → produce a 3–5 bullet agenda grounded in the context above.
-6. Save prep note as `memory/meetings/<YYYY-MM-DD>-<slug>-prep.md`.
+Steps:
 
-## Ingest flow (after the meeting)
+1. `rg` `core/meetings/` for prior meetings with the same attendees or
+   project tag. Take the 3 most recent.
+2. `rg` `core/projects/` for any project the meeting title references.
+3. `rg` `core/people/` for each known attendee.
+4. Compose 3 bullets:
+   - **Last touchpoint** — most recent prior meeting + 1-line outcome.
+   - **Open threads** — at-risk goals, pending decisions, unresolved insights.
+   - **Their context** — relevant facts about the people in the room.
+5. End with one offer: *"Want me to take notes during the meeting?"*
 
-When user pastes a transcript / read.ai summary / notes:
+Never paste raw memory dumps. Always synthesize.
 
-1. **Save the raw input** to `memory/meetings/<YYYY-MM-DD>-<slug>.md` verbatim.
-   Never lose the source.
-2. **Extract structured facts** into a summary block at the top of the file:
-   - **Attendees** → names, matched to `memory/relationships.md`.
-   - **Topics** → one line each.
-   - **Decisions made** → one line each, with who decided.
-   - **Action items** → `- [ ] <owner>: <action> — by <date>`.
-   - **Open questions** → one line each.
-   - **Mentioned projects / people / tools** → tagged inline.
-3. **Auto-capture to the right memory files** (Contract §4):
-   - Decisions → append to `memory/decisions.md`.
-   - Attendees and what they said they'd do → update
-     `memory/relationships.md`.
-   - Action items owned by the user → append to today's daily note.
-   - New facts/norms → `memory/learnings.md`.
-4. **Write structured rows to the AI Memory brain** (Contract §14, via
-   `packs/company-brain.md`). The Meeting row is the backbone — every other
-   write from this meeting links back to it via the `Source Meeting`
-   relation:
-   - **Meeting row** (always first) → upsert one `🗓 Meetings` row. Dedup
-     by `Title + Date`. Fill `Kind`, `Attendees` (→ People), `Related
-     Project` if the meeting is project-scoped, `Related Student` if it's a
-     coaching session (permissioned — will be written only if the user has
-     access to the Student row), and `Notes Link` pointing to the canonical
-     notes page (the `memory/meetings/<date>-<slug>.md` local file or the
-     Notion notes page if one exists). **Never paste the transcript body
-     into the row.**
-   - Each **Decision made** → upsert a `✅ Decisions` row. Title = the
-     decision statement. `Decided on` = meeting date. `Owner` = person who
-     made the call (relation to `👤 People`). `Participants` = attendees.
-     `Rationale` = the reasoning as captured. `Outcome` = the decision
-     itself. `Source` = `meeting`. `Status` = `Active`. `Source Meeting`
-     → the Meetings row from the first step. Confidence = high if
-     explicit, medium if inferred. Dedup by Title + Decided on. Also
-     back-link by adding the Decision row to the Meeting's `Decisions
-     Produced` relation.
-   - Each attendee the assistant doesn't already know → upsert `👤 People`
-     row with whatever context the transcript reveals (role mentions,
-     expertise, views). Never write sensitive content about an attendee.
-   - Each cross-cutting observation (*"onboarding's slow because X"*,
-     *"customers keep asking for Y"*) → upsert `💡 Insights` row. If a
-     fuzzy match exists, increment `Surface count`. Tag appropriately.
-     Set `Source Meeting` → the Meetings row; back-link via
-     `Insights Produced`.
-   - Each project referenced with state change (*"Project X is now
-     blocked on Y"*) → update `🚀 Projects.Status` + `Blockers`.
-   - Each goal status update (*"We're on track for Q2 growth"*) → update
-     the matching `🎯 Goals` row's `Status` and append the Decision row to
-     its `Related Decisions` if applicable.
-5. **Auto-promote to Notion canonical pages** (Contract §9) the qualifying
-   items:
-   - If a decision affects a project → promote summary to that project page's
-     `## Assistant Updates` inbox (Rule 9), AND write the structured row to
-     `✅ Decisions` (Rule 14). Both fire on one event.
-   - If an action item is owed to another Alpha employee → promote to their
-     team page's `## Assistant Updates` inbox, tagged with their name.
-   - If a question is company-wide → promote to the Operating Framework
-     page's `## Assistant Updates`.
-   - Skip any item the user marks *"keep local"* / *"don't share"*.
-6. **Run the sensitivity gate** on anything involving interpersonal
-   feedback, compensation, strategic doubt, or explicit privacy markers
-   from the meeting. Gated items never write to brain or canon; they land
-   in `memory/meetings/` with a `[LOCAL ONLY]` tag.
-7. **Confirm in one sentence:** *"Got the <topic> meeting. 3 decisions, 2
-   action items for you, 1 for <person>. Brain: 1 Meeting + 3 Decisions +
-   1 Insight. Canon: 2 inbox entries on <project>."*
+## Post-meeting ingest — paste-based
 
-## Auto-ingest from read.ai (future-ready design)
+Trigger: user pastes a transcript or summary, or says *"here are my notes
+from the X meeting"*.
 
-Today (V1): the user pastes read.ai summary email text into chat. This pack
-handles it.
+Steps:
 
-Tomorrow (V1.x): when a read.ai integration lands, notes will auto-land in
-`memory/meetings/` as markdown files. Detect unprocessed files at session
-start and run the ingest flow on each one silently. Notify the user once:
-*"I processed 3 new meetings from read.ai while you were away — here's the
-30-second summary."*
+1. Identify date + title + attendees from the input. If anything is
+   ambiguous, ask one question to confirm.
+2. Determine `<slug>` (kebab-case from title).
+3. **Write the full body to Archive** first:
 
-Schema we expect for auto-dropped files (once integration exists):
+   ```bash
+   cat <<'EOF' | scripts/promote entity \
+       archive/meeting-notes/<YYYY-MM-DD>_<slug>.md \
+       --message "ingest meeting notes: <title>" --source meeting --confidence high
+   <full notes body>
+   EOF
+   ```
 
-```
-memory/meetings/
-  2026-04-22-prod-sync.md       ← raw read.ai summary, verbatim
-  2026-04-22-prod-sync-processed.json  ← {ingested_at, promoted_to: [...]}
-```
+4. **Then write the Core Meetings row** linking back:
 
-The `-processed.json` sidecar prevents reprocessing.
+   ```bash
+   cat <<'EOF' | scripts/promote entity \
+       core/meetings/<YYYY-MM-DD>_<slug>.md \
+       --message "log meeting: <title>" --source meeting --confidence high
+   ---
+   title: <title>
+   date: <YYYY-MM-DD>
+   attendees:
+     - ../people/<slug-1>.md
+     - ../people/<slug-2>.md
+   related_project: ../projects/<slug>.md
+   notes_path: ../../archive/meeting-notes/<YYYY-MM-DD>_<slug>.md
+   ---
 
-## What NEVER gets promoted
+   <≤10 line summary>
+   EOF
+   ```
 
-- Verbatim transcripts (always summarize — Contract §9).
-- Personal / off-topic conversation in the meeting (trim it).
-- Anything marked confidential, HR-related, or about hiring decisions —
-  capture locally only; if auto-promote logic flags it, default to skip and
-  log to `logs/session-log.md` for user review.
+5. **Extract Decisions and Insights** as separate atomic commits:
 
-## Memory layout
+   ```bash
+   # One per decision
+   cat body | scripts/promote entity \
+       core/decisions/<YYYY-MM-DD>_<decision-slug>.md \
+       --message "log decision: <title>" --source meeting --confidence high
 
-```
-memory/meetings/
-  README.md                      ← short doc of this structure
-  <date>-<slug>.md              ← one file per meeting, with structured header
-  <date>-<slug>-prep.md         ← (optional) pre-meeting prep notes
-```
+   # One per insight
+   cat body | scripts/promote entity \
+       core/insights/<YYYY-MM-DD>_<insight-slug>.md \
+       --message "log insight: <title>" --source meeting --confidence medium
+   ```
 
-## Configurable per user
+   Decisions and Insights link back to the Meetings row via
+   `source_meeting:` frontmatter.
 
-In `WORKSTYLE.md` or `TONE.md`, the user can override:
+6. **Update related Goals** if the meeting changed status. Use a
+   `consolidate(goals):` commit type.
 
-- `meetings.promote_action_items_to_others`: default `true`. Set `false` to
-  keep action items private until the user says otherwise.
-- `meetings.summary_length`: `short` (default), `medium`, `full`.
-- `meetings.ingest_automatically`: default `true`. Set `false` to require
-  explicit *"process this meeting"*.
+## Sensitivity gate
+
+Apply Rule 14 to the entire ingest. If any line of the notes meets the
+sensitivity criteria (negative feedback about named people, salary, etc.):
+
+- That line stays in `memory/` only, never lands in the brain.
+- Tell the user once: *"Two parts of those notes felt sensitive — kept those
+  in your local journal."*
+
+## Recurring meetings
+
+`core/meetings/recurring/<slug>.md` (seeded by `company-brain-seed`) holds
+the definition. Each occurrence creates a fresh `core/meetings/YYYY-MM-DD_<slug>.md`
+that links to the recurring template via frontmatter `series:`.
+
+## Failure modes
+
+- KB pending → all writes queue to `logs/pending-writes.md`. The assistant
+  tells the user: *"Brain access isn't live yet — I'll push these notes
+  when you're added to the org."*
+- Push fails → same queue, replayed by morning ritual.
+- Conflict on a meeting file → unlikely (date + slug + ts is unique). If it
+  happens, follow `CONFLICT-PLAYBOOK.md`.
+
+## What never happens
+
+- The assistant never sends the meeting transcript to a network destination
+  other than the KB git push (Rule 10).
+- The assistant never auto-creates a new Project / Person row from a meeting
+  unless the user explicitly approves (Rule 9 hard rule #4 in
+  `PROMOTION-RULES.md`).
+- The assistant never edits prior decisions in place. New context lands as
+  a new Decision or an inbox note that the owner consolidates.

@@ -3,6 +3,7 @@ logs/*.md
 logs/*.log
 logs/.smtp-credentials.env
 !logs/.gitkeep
+
 memory/YYYY-MM-DD.md
 memory/*.md
 !memory/README.md
@@ -10,6 +11,25 @@ memory/*.md
 !memory/rituals-log.md
 !memory/templates/
 !memory/templates/**
-!memory/brain-cache/
-!memory/brain-cache/**
+
+memory/kb-location.md
+memory/kb-status.md
+memory/gh-username.md
+
+# Editable files — shipped as *.template, copied to live filename on
+# first bootstrap. Live filenames stay out of git so daily `git pull`
+# never collides with user edits. See §6e of the v2 plan.
+USER.md
+IDENTITY.md
+TONE.md
+WORKSTYLE.md
+CURRENT.md
+onboarding/company.md
+onboarding/team.md
+onboarding/role.md
+packs/team-*.md
+packs/personal-*.md
+!packs/team-*.md.template
+!packs/personal-*.md.template
+
 .DS_Store

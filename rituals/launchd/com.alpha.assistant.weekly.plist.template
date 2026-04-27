@@ -9,7 +9,7 @@
     <array>
         <string>/bin/bash</string>
         <string>-c</string>
-        <string>open -a "Claude" --args --message "/ritual weekly — run the weekly review + owner digest for <AI_OS_FOLDER>"</string>
+        <string>"<AI_OS_FOLDER>/scripts/preflight" &amp;&amp; "<AI_OS_FOLDER>/scripts/sync-kb" &amp;&amp; open -a "Claude" --args --message "/ritual weekly — run the weekly review + owner digest for <AI_OS_FOLDER>"</string>
     </array>
 
     <!-- Fires once a week on the configured weekday (5 = Friday by default) -->
