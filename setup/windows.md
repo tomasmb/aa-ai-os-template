@@ -1,6 +1,6 @@
 # Setup — Windows
 
-You'll need a GitHub account that the admin can add to the `alphaanywhere`
+You'll need a GitHub account that the admin can add as a collaborator
 organization. Bring your username — that's all.
 
 ## The fast way (recommended)

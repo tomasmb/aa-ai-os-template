@@ -1,6 +1,6 @@
 # Setup — macOS
 
-You'll need a GitHub account that the admin can add to the `alphaanywhere`
+You'll need a GitHub account that the admin can add as a collaborator
 organization. Bring your username — that's all.
 
 ## The fast way (recommended)
@@ -89,7 +89,7 @@ replays them on the next morning ritual.
 
 ### "remote: Repository not found" when cloning the brain
 
-You're authenticated but not in the `alphaanywhere` org yet. The bootstrap
+You're authenticated but Tomas hasn't added you as a collaborator on the KB yet. The bootstrap
 writes `memory/kb-status.md = pending` and tells you which GitHub username
 to send to the admin. Personal-only mode is fine until access lands.
 

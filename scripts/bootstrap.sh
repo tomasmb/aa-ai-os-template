@@ -80,7 +80,7 @@ checked_at: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
 admin_contact: see docs/ADMIN-GUIDE.md
 note: |
   GitHub doesn't let me read $KB_REPO yet. Send your GH username ($gh_user) to
-  the admin so they can add you to the org. The assistant will keep working in
+  the admin so they can add you as a collaborator on the KB. The assistant will keep working in
   personal-only mode until access lands and will recheck on every session boot.
 EOF
         warn "Brain access pending. Continuing in personal-only mode."
