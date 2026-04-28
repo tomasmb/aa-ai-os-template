@@ -1,12 +1,12 @@
 # Alpha AI OS — one-line installer (Windows)
 # Usage:
-#   iwr https://raw.githubusercontent.com/alphaanywhere/aa-ai-os-template/main/scripts/install.ps1 -useb | iex
+#   iwr https://raw.githubusercontent.com/tomasmb/aa-ai-os-template/main/scripts/install.ps1 -useb | iex
 #
 # Idempotent: safe to re-run. Hands off to scripts/bootstrap.ps1 once cloned.
 
 $ErrorActionPreference = 'Stop'
 
-$RepoUrl       = if ($env:ALPHA_REPO_URL) { $env:ALPHA_REPO_URL } else { 'https://github.com/alphaanywhere/aa-ai-os-template.git' }
+$RepoUrl       = if ($env:ALPHA_REPO_URL) { $env:ALPHA_REPO_URL } else { 'https://github.com/tomasmb/aa-ai-os-template.git' }
 $Root          = if ($env:ALPHA_ROOT)     { $env:ALPHA_ROOT }     else { Join-Path $HOME 'Alpha AI OS' }
 $AssistantDir  = Join-Path $Root 'alpha-assistant'
 

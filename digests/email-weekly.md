@@ -24,11 +24,11 @@ file so the user (and their manager, if CC'd) can open it from any
 device — phone included — without a local clone. URL shape:
 
 ```text
-https://github.com/alphaanywhere/alpha-anywhere-kb/blob/main/<relative-kb-path>
+https://github.com/tomasmb/alpha-anywhere-kb/blob/main/<relative-kb-path>
 ```
 
 For example: `core/projects/q2-churn.md` →
-`https://github.com/alphaanywhere/alpha-anywhere-kb/blob/main/core/projects/q2-churn.md`.
+`https://github.com/tomasmb/alpha-anywhere-kb/blob/main/core/projects/q2-churn.md`.
 
 When a Core file links to an Archive sibling via `notes_path:`, the
 digest links the **Archive** path (full notes), not the Core row, when

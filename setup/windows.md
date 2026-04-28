@@ -8,7 +8,7 @@ organization. Bring your username — that's all.
 Open **PowerShell** (Start Menu → search "PowerShell") and paste:
 
 ```powershell
-iwr https://raw.githubusercontent.com/alphaanywhere/aa-ai-os-template/main/scripts/install.ps1 -useb | iex
+iwr https://raw.githubusercontent.com/tomasmb/aa-ai-os-template/main/scripts/install.ps1 -useb | iex
 ```
 
 What this does:
@@ -44,7 +44,7 @@ winget install --id GitHub.cli    --silent --accept-package-agreements --accept-
 $root = Join-Path $HOME 'Alpha AI OS'
 New-Item -ItemType Directory -Force -Path $root | Out-Null
 Set-Location $root
-git clone https://github.com/alphaanywhere/aa-ai-os-template.git alpha-assistant
+git clone https://github.com/tomasmb/aa-ai-os-template.git alpha-assistant
 & powershell -ExecutionPolicy Bypass -File alpha-assistant\scripts\bootstrap.ps1
 ```
 
@@ -59,7 +59,7 @@ Idempotent. Safe to re-run any time.
 Run PowerShell with execution policy bypass for the install line:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -Command "iwr https://raw.githubusercontent.com/alphaanywhere/aa-ai-os-template/main/scripts/install.ps1 -useb | iex"
+powershell -ExecutionPolicy Bypass -Command "iwr https://raw.githubusercontent.com/tomasmb/aa-ai-os-template/main/scripts/install.ps1 -useb | iex"
 ```
 
 ### "winget is not recognized"

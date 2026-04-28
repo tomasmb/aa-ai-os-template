@@ -32,7 +32,7 @@ Body: a single Notion **callout block** (warning style) with this
 text:
 
 > **Frozen on YYYY-MM-DD.** Live source of truth is now
-> [`alphaanywhere/alpha-anywhere-kb`](https://github.com/alphaanywhere/alpha-anywhere-kb).
+> [`tomasmb/alpha-anywhere-kb`](https://github.com/tomasmb/alpha-anywhere-kb).
 > Do not edit — changes here are not synced. To update an entry,
 > open the matching file in the GitHub repo or ask your assistant.
 
@@ -83,11 +83,11 @@ Updates itself after that.
 
 **macOS / Linux** — open **Terminal**:
 
-`curl -fsSL https://raw.githubusercontent.com/alphaanywhere/aa-ai-os-template/main/scripts/install.sh | bash`
+`curl -fsSL https://raw.githubusercontent.com/tomasmb/aa-ai-os-template/main/scripts/install.sh | bash`
 
 **Windows** — open **PowerShell**:
 
-`iwr -useb https://raw.githubusercontent.com/alphaanywhere/aa-ai-os-template/main/scripts/install.ps1 | iex`
+`iwr -useb https://raw.githubusercontent.com/tomasmb/aa-ai-os-template/main/scripts/install.ps1 | iex`
 
 The installer guides you the whole way: installs git + GitHub CLI,
 signs you in to GitHub (creates an account if you don't have one),
@@ -108,7 +108,7 @@ Ping `#ai-os` on Slack, or DM your manager.
 ---
 
 *For admins:* setup, member invites, and migration history live in
-[`docs/ADMIN-GUIDE.md`](https://github.com/alphaanywhere/aa-ai-os-template/blob/main/docs/ADMIN-GUIDE.md)
+[`docs/ADMIN-GUIDE.md`](https://github.com/tomasmb/aa-ai-os-template/blob/main/docs/ADMIN-GUIDE.md)
 inside the assistant repo.
 ```
 

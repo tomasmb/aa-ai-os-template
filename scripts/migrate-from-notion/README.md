@@ -39,7 +39,7 @@ scripts/migrate-from-notion/
 ## Quick start
 
 ```bash
-cd ~/Repos/alphaanywhere/aa-ai-os-template/scripts/migrate-from-notion
+cd ~/Repos/tomasmb/aa-ai-os-template/scripts/migrate-from-notion
 npm install
 
 export NOTION_TOKEN=secret_…

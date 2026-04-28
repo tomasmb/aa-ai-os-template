@@ -8,7 +8,7 @@ set -uo pipefail
 ASSISTANT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 KB_LOC_FILE="$ASSISTANT_DIR/memory/kb-location.md"
 KB_STATUS_FILE="$ASSISTANT_DIR/memory/kb-status.md"
-KB_EXPECTED_REPO="${ALPHA_KB_REPO:-alphaanywhere/alpha-anywhere-kb}"
+KB_EXPECTED_REPO="${ALPHA_KB_REPO:-tomasmb/alpha-anywhere-kb}"
 
 red()   { printf "\033[1;31m%s\033[0m\n" "$*"; }
 yel()   { printf "\033[1;33m%s\033[0m\n" "$*"; }

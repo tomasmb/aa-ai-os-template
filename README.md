@@ -25,7 +25,7 @@ You'll need a GitHub account. The setup script asks you to sign in once.
 Open Terminal and paste:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/alphaanywhere/aa-ai-os-template/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/tomasmb/aa-ai-os-template/main/scripts/install.sh | bash
 ```
 
 ### Windows
@@ -33,7 +33,7 @@ curl -fsSL https://raw.githubusercontent.com/alphaanywhere/aa-ai-os-template/mai
 Open PowerShell and paste:
 
 ```powershell
-iwr https://raw.githubusercontent.com/alphaanywhere/aa-ai-os-template/main/scripts/install.ps1 -useb | iex
+iwr https://raw.githubusercontent.com/tomasmb/aa-ai-os-template/main/scripts/install.ps1 -useb | iex
 ```
 
 The script will:

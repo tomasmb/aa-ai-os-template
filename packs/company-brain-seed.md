@@ -44,7 +44,7 @@ Each directory has a `_README.md` describing what belongs there + retention.
 
 For each person on the team:
 
-- Pull GitHub username, display name, primary email from `gh api orgs/alphaanywhere/members`.
+- Pull GitHub username + display name from `gh api repos/tomasmb/alpha-anywhere-kb/collaborators` (or the equivalent org/team API once the repo lives in an org).
 - Create `core/people/<github-username>.md` with frontmatter + a 3-line stub.
 - Stub body: *"Seeded from GitHub on YYYY-MM-DD. Update with role, team,
   manager when known."*

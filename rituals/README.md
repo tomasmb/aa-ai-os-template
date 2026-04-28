@@ -196,7 +196,7 @@ session boot via the standard "since-last-session" briefing.
 The **morning** ritual additionally runs `scripts/sync-assistant`
 **before** preflight + sync-kb. This is the daily auto-update path for
 the assistant repo itself: a `git pull --rebase --autostash` against
-`alphaanywhere/aa-ai-os-template`. Result: every morning, users get the
+`tomasmb/aa-ai-os-template`. Result: every morning, users get the
 latest Contract, packs, scripts, and templates with no manual action and
 no zip downloads. EOD and weekly rituals do **not** repull the assistant
 repo (one pull per day is enough; intra-day updates are uncommon).

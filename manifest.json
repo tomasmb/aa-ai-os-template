@@ -1,11 +1,11 @@
 {
-  "$schema": "https://raw.githubusercontent.com/alphaanywhere/aa-ai-os-template/main/docs/manifest.schema.json",
+  "$schema": "https://raw.githubusercontent.com/tomasmb/aa-ai-os-template/main/docs/manifest.schema.json",
   "name": "alpha-assistant",
   "version": "2.0.0",
   "released_at": "2026-04-27",
   "channel": "stable",
   "changelog": [
-    "The company brain moved from Notion to a private GitHub repo (alphaanywhere/alpha-anywhere-kb). Reading it is now instant — local files instead of API calls. Writing is atomic git commits.",
+    "The company brain moved from Notion to a private GitHub repo (tomasmb/alpha-anywhere-kb). Reading it is now instant — local files instead of API calls. Writing is atomic git commits.",
     "One-line setup: paste a single command in Terminal/PowerShell and you're done. The installer handles git, gh CLI, signing you in, and cloning both repos.",
     "Daily updates happen automatically: every morning the assistant pulls the latest Contract, packs, scripts, and brain. No more zip downloads.",
     "The brain still has the same two tiers — a lean Core (people, projects, decisions, insights, meetings, goals) and a heavier Archive (full meeting notes, playbooks, glossary, students). Same shape, just files now.",
@@ -30,10 +30,10 @@
     "Adapters (AGENTS.md, CLAUDE.md, .cursor/rules/alpha-assistant.mdc) rewritten with the new boot sequence (preflight → sync-kb → partial-mode check → daily note → greet)."
   ],
   "_note": "Updates ship via git. The morning ritual runs `git pull --rebase` on this folder daily. manifest.json and .version are kept for human reference; they are not behavioral. There is no zip download anymore — the one-line installer clones the repo directly.",
-  "manifest_url": "https://raw.githubusercontent.com/alphaanywhere/aa-ai-os-template/main/manifest.json",
-  "repository": "https://github.com/alphaanywhere/aa-ai-os-template",
-  "kb_repository": "https://github.com/alphaanywhere/alpha-anywhere-kb",
-  "release_notes_url": "https://github.com/alphaanywhere/aa-ai-os-template/releases/tag/v2.0.0",
+  "manifest_url": "https://raw.githubusercontent.com/tomasmb/aa-ai-os-template/main/manifest.json",
+  "repository": "https://github.com/tomasmb/aa-ai-os-template",
+  "kb_repository": "https://github.com/tomasmb/alpha-anywhere-kb",
+  "release_notes_url": "https://github.com/tomasmb/aa-ai-os-template/releases/tag/v2.0.0",
   "minimum_previous_version": "2.0.0",
   "migrations": [],
   "protected_files": [

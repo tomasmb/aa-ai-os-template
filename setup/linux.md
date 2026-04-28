@@ -8,7 +8,7 @@ organization. Bring your username — that's all.
 Open a terminal and paste:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/alphaanywhere/aa-ai-os-template/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/tomasmb/aa-ai-os-template/main/scripts/install.sh | bash
 ```
 
 What this does:
@@ -47,7 +47,7 @@ sudo apt-get install -y gh
 # Workspace
 mkdir -p "$HOME/Alpha AI OS"
 cd "$HOME/Alpha AI OS"
-git clone https://github.com/alphaanywhere/aa-ai-os-template.git alpha-assistant
+git clone https://github.com/tomasmb/aa-ai-os-template.git alpha-assistant
 bash alpha-assistant/scripts/bootstrap.sh
 ```
 
@@ -57,7 +57,7 @@ bash alpha-assistant/scripts/bootstrap.sh
 sudo dnf install -y git gh
 mkdir -p "$HOME/Alpha AI OS"
 cd "$HOME/Alpha AI OS"
-git clone https://github.com/alphaanywhere/aa-ai-os-template.git alpha-assistant
+git clone https://github.com/tomasmb/aa-ai-os-template.git alpha-assistant
 bash alpha-assistant/scripts/bootstrap.sh
 ```
 
@@ -67,7 +67,7 @@ bash alpha-assistant/scripts/bootstrap.sh
 sudo pacman -S --needed git github-cli
 mkdir -p "$HOME/Alpha AI OS"
 cd "$HOME/Alpha AI OS"
-git clone https://github.com/alphaanywhere/aa-ai-os-template.git alpha-assistant
+git clone https://github.com/tomasmb/aa-ai-os-template.git alpha-assistant
 bash alpha-assistant/scripts/bootstrap.sh
 ```
 

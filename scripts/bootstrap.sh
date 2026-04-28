@@ -14,7 +14,7 @@ set -euo pipefail
 ASSISTANT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 ROOT="$(dirname "$ASSISTANT_DIR")"
 KB_DIR="$ROOT/alpha-anywhere-kb"
-KB_REPO="${ALPHA_KB_REPO:-alphaanywhere/alpha-anywhere-kb}"
+KB_REPO="${ALPHA_KB_REPO:-tomasmb/alpha-anywhere-kb}"
 KB_URL="https://github.com/$KB_REPO.git"
 
 mkdir -p "$ASSISTANT_DIR/memory" "$ASSISTANT_DIR/logs"

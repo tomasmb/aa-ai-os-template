@@ -5,7 +5,7 @@ $ErrorActionPreference = 'Continue'
 $AssistantDir   = Split-Path -Parent $PSScriptRoot
 $KbLocFile      = Join-Path $AssistantDir 'memory\kb-location.md'
 $KbStatusFile   = Join-Path $AssistantDir 'memory\kb-status.md'
-$KbExpectedRepo = if ($env:ALPHA_KB_REPO) { $env:ALPHA_KB_REPO } else { 'alphaanywhere/alpha-anywhere-kb' }
+$KbExpectedRepo = if ($env:ALPHA_KB_REPO) { $env:ALPHA_KB_REPO } else { 'tomasmb/alpha-anywhere-kb' }
 
 function Red($m)   { Write-Host $m -ForegroundColor Red }
 function Yel($m)   { Write-Host $m -ForegroundColor Yellow }

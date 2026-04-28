@@ -301,7 +301,7 @@ canonical release.
 
 ## Changelog
 - **2.0** — Knowledge base migrated from Notion to git
-  (`alphaanywhere/alpha-anywhere-kb`, sibling clone, private). Rules 9, 10,
+  (`tomasmb/alpha-anywhere-kb`, sibling clone, private). Rules 9, 10,
   11, 12, 14 rewritten around git ops. Rule 14a removed (no row-level
   permissions in v2 — org membership gates the whole repo). Rules 16 (git
   discipline) and 17 (KB clone health) added. Rule 8 (update execution)

@@ -52,8 +52,8 @@ for users who skipped the installer.
 Claude Desktop doesn't run shell commands itself. The user runs the one-line
 installer in their Terminal/PowerShell **once**:
 
-- macOS / Linux: `curl -fsSL https://raw.githubusercontent.com/alphaanywhere/aa-ai-os-template/main/scripts/install.sh | bash`
-- Windows: `iwr https://raw.githubusercontent.com/alphaanywhere/aa-ai-os-template/main/scripts/install.ps1 -useb | iex`
+- macOS / Linux: `curl -fsSL https://raw.githubusercontent.com/tomasmb/aa-ai-os-template/main/scripts/install.sh | bash`
+- Windows: `iwr https://raw.githubusercontent.com/tomasmb/aa-ai-os-template/main/scripts/install.ps1 -useb | iex`
 
 Then they open `~/Alpha AI OS/alpha-assistant` as a Claude Desktop project.
 The assistant invokes `scripts/preflight` and `scripts/sync-kb` as part of
@@ -88,7 +88,7 @@ the assistant folder. Scripts run via openclaw's shell tool.
 
 - `gh api user` captures the user's GitHub username + primary email.
 - `git config --global user.name` / `user.email` are set if unset.
-- `gh repo clone alphaanywhere/alpha-anywhere-kb` lands the KB sibling.
+- `gh repo clone tomasmb/alpha-anywhere-kb` lands the KB sibling.
 - On 403/404 (not in org yet), `memory/kb-status.md` = `pending` and the
   assistant runs partial onboarding until access lands.
 

@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # Alpha AI OS — one-line installer (macOS / Linux)
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/alphaanywhere/aa-ai-os-template/main/scripts/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/tomasmb/aa-ai-os-template/main/scripts/install.sh | bash
 #
 # Idempotent: safe to re-run. Hands off to scripts/bootstrap.sh once cloned.
 
 set -euo pipefail
 
-REPO_URL="${ALPHA_REPO_URL:-https://github.com/alphaanywhere/aa-ai-os-template.git}"
+REPO_URL="${ALPHA_REPO_URL:-https://github.com/tomasmb/aa-ai-os-template.git}"
 ROOT="${ALPHA_ROOT:-$HOME/Alpha AI OS}"
 ASSISTANT_DIR="$ROOT/alpha-assistant"
 

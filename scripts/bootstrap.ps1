@@ -5,7 +5,7 @@ $ErrorActionPreference = 'Stop'
 
 $AssistantDir = Split-Path -Parent $PSScriptRoot
 $Root         = Split-Path -Parent $AssistantDir
-$KbRepo       = if ($env:ALPHA_KB_REPO) { $env:ALPHA_KB_REPO } else { 'alphaanywhere/alpha-anywhere-kb' }
+$KbRepo       = if ($env:ALPHA_KB_REPO) { $env:ALPHA_KB_REPO } else { 'tomasmb/alpha-anywhere-kb' }
 $KbDir        = Join-Path $Root 'alpha-anywhere-kb'
 
 New-Item -ItemType Directory -Force -Path (Join-Path $AssistantDir 'memory') | Out-Null

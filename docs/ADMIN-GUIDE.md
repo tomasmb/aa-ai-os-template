@@ -1,141 +1,120 @@
 # ADMIN-GUIDE.md — Alpha AI OS administration
 
-> Maintainer-only runbook. Covers GitHub org setup, member invites, KB
-> seeding, hard-forget via `git filter-repo`, the upgrade path to
-> Enterprise SCIM auto-provisioning, and the Notion → KB migration.
+> Maintainer-only runbook. Covers current repo layout, inviting and
+> removing employees, KB seeding history, hard-forget via
+> `git filter-repo`, and the eventual upgrade path to a GitHub org +
+> SCIM auto-provisioning.
 >
 > **You are the operator** — these procedures are not assistant-runnable
 > and never executed by an end-user laptop. Prereqs: `gh` CLI authed
-> against an account with org admin rights, write access to both repos.
+> as `tomasmb` (admin on both repos).
 
-## 1. One-time org + repo setup
+## 1. Repo state (current)
 
-1. **Create the org** at https://github.com/organizations/new — name it
-   `alphaanywhere` (the assistant + bootstrap scripts hard-code this).
-2. **Move both repos under the org.** From the old owner's account,
-   transfer:
-   - `aa-ai-os-template` → `alphaanywhere/aa-ai-os-template`
-   - `alpha-anywhere-kb` → `alphaanywhere/alpha-anywhere-kb`
+Both repos live under the personal account `tomasmb`:
 
-   `gh repo transfer <old-owner>/<repo> alphaanywhere`
-3. **Set repo visibility:**
-   - `gh repo edit alphaanywhere/aa-ai-os-template --visibility public --accept-visibility-change-consequences`
-     — required so the one-line installer can clone before the user has
-     auth set up.
-   - `gh repo edit alphaanywhere/alpha-anywhere-kb --visibility private`
-     — the company brain stays gated.
-4. **Create the access team:**
-   ```bash
-   gh api orgs/alphaanywhere/teams \
-       -f name="employees" \
-       -f description="Read+write access to alpha-anywhere-kb" \
-       -f privacy=closed
-   ```
-5. **Grant the team write access to the KB:**
-   ```bash
-   gh api orgs/alphaanywhere/teams/employees/repos/alphaanywhere/alpha-anywhere-kb \
-       -X PUT -f permission=push
-   ```
-6. **Optionally grant the team triage on the assistant repo** (for opening
-   issues / suggesting Contract changes) — leave write off so daily
-   `git pull` updates flow only from maintainers.
+- `tomasmb/aa-ai-os-template` — **public**. The assistant scaffold +
+  installer. Public so the one-line `curl | bash` works before the
+  user has any GitHub auth.
+- `tomasmb/alpha-anywhere-kb` — **private**. The company brain.
+  Collaborator-gated.
 
-After this section, the installer flow in `setup/macos.md` works
-end-to-end.
+Org migration (e.g., `trilogy-group`) is deferred. See `TODO-LOCAL.md`
+for the steps when you're ready. Until then, all member management is
+direct collaborator add/remove on the private KB repo.
+
+Sanity check from a fresh `gh auth login`:
+
+```bash
+gh repo view tomasmb/aa-ai-os-template \
+    --json visibility,viewerCanAdminister
+gh repo view tomasmb/alpha-anywhere-kb \
+    --json visibility,viewerCanAdminister
+```
+
+Both should report `viewerCanAdminister: true` for you.
 
 ## 2. Inviting a new employee (the daily admin task)
 
-Bootstrap captures the new hire's GitHub username on first run and tells
-them to send it to you. When you have the username:
+Bootstrap captures the new hire's GitHub username on first run and
+tells them to send it to you. When you have the username:
 
 ```bash
 USERNAME="<their-gh-username>"
-gh api orgs/alphaanywhere/memberships/$USERNAME -X PUT -f role=member
-gh api orgs/alphaanywhere/teams/employees/memberships/$USERNAME -X PUT \
-    -f role=member
+gh api -X PUT \
+    repos/tomasmb/alpha-anywhere-kb/collaborators/$USERNAME \
+    -f permission=push
 ```
 
-The user reruns `bash ~/Alpha\ AI\ OS/alpha-assistant/scripts/bootstrap.sh`
-(or `.ps1`); the KB clone now succeeds, `memory/kb-status.md` flips off
+GitHub emails the invitation. Once they **accept** (one click in the
+email or in their notifications), they have read+write access to the
+KB. Then have them rerun
+`bash ~/Alpha\ AI\ OS/alpha-assistant/scripts/bootstrap.sh` (or
+`.ps1`); the KB clone now succeeds, `memory/kb-status.md` flips off
 `pending`, and onboarding Block 8 runs on the next session.
+
+`aa-ai-os-template` is public — no invite needed for the assistant
+scaffold itself.
 
 ### Bulk invite
 
-If you have a CSV of `username,email` pairs:
+If you have a CSV of `username,_` pairs:
 
 ```bash
 while IFS=, read -r username _; do
-  gh api orgs/alphaanywhere/memberships/"$username" -X PUT -f role=member
-  gh api orgs/alphaanywhere/teams/employees/memberships/"$username" \
-       -X PUT -f role=member
+  gh api -X PUT \
+      repos/tomasmb/alpha-anywhere-kb/collaborators/"$username" \
+      -f permission=push
 done < new-hires.csv
+```
+
+### Check pending invites
+
+```bash
+gh api repos/tomasmb/alpha-anywhere-kb/invitations \
+    --jq '.[] | {invitee: .invitee.login, created_at}'
 ```
 
 ### Removing access
 
 ```bash
-gh api orgs/alphaanywhere/memberships/$USERNAME -X DELETE
+gh api -X DELETE \
+    repos/tomasmb/alpha-anywhere-kb/collaborators/$USERNAME
 ```
 
 This revokes the KB clone — the user's local clone keeps working until
-their next `git pull --rebase`, at which point it 403s. They keep their
-local state; nothing on disk is wiped. (See §5 for true destruction.)
+their next `git pull --rebase`, at which point it 403s. They keep
+their local state; nothing on disk is wiped. (See §5 for true
+destruction.)
 
-## 3. Seeding the KB (one-time, before first user joins)
+## 3. Seeding the KB (already done — kept for record)
 
-If the KB repo is still empty, follow `packs/company-brain-seed.md` from
-your own assistant install. Summary:
-
-```bash
-mkdir -p ~/Alpha\ AI\ OS
-cd ~/Alpha\ AI\ OS
-gh repo clone alphaanywhere/alpha-anywhere-kb
-
-cd alpha-anywhere-kb
-# 1. README, KB-CONVENTIONS, COMMIT-CONVENTIONS, CONFLICT-PLAYBOOK
-# 2. .github/workflows/lint.yml, .gitattributes, CODEOWNERS
-# 3. core/{people,projects,meetings,goals,decisions,insights}/.gitkeep
-# 4. archive/{meeting-notes,decision-rationale,playbooks,glossary,
-#             students,projects,onboarding,onboarding/_templates,
-#             roles,teams}/.gitkeep
-# 5. inbox/.gitkeep
-# 6. operating-framework/README.md (entry point)
-
-git add -A
-git commit -m "seed: initial KB scaffold"
-git push origin main
-git tag v1.0.0 && git push --tags
-```
-
-The exact contents per file are in `packs/company-brain-seed.md`.
+The KB was seeded from Notion on 2026-04-27. If you ever need to
+re-seed from scratch, the procedure is in
+[`packs/company-brain-seed.md`](../packs/company-brain-seed.md);
+end-to-end Notion-source migration is in
+[`docs/MIGRATION-RUNBOOK.md`](MIGRATION-RUNBOOK.md).
 
 ## 4. Notion → KB migration (one-time, before cutting v2.0.0)
 
-The migration is a maintainer-run Node script. End-to-end runbook lives
-in `docs/MIGRATION-RUNBOOK.md`. Quick summary:
+Done on 2026-04-27. Slimdown of the legacy Notion hub completed the
+same day per [`docs/NOTION-SLIMDOWN-RUNBOOK.md`](NOTION-SLIMDOWN-RUNBOOK.md).
+The maintainer-run Node script lives in
+[`scripts/migrate-from-notion/`](../scripts/migrate-from-notion).
 
-1. **Inventory pass** (read-only):
-   `node scripts/migrate-from-notion/inventory.mjs` →
-   produces `docs/MIGRATION-INVENTORY.md`. Review scope.
-2. **Writer pass** (idempotent):
-   `NOTION_TOKEN=secret_… node scripts/migrate-from-notion/write.mjs \
-       --kb ~/Alpha\ AI\ OS/alpha-anywhere-kb` → emits Core + Archive +
-   inbox files.
-3. **Validate**:
-   `node scripts/migrate-from-notion/validate.mjs --kb …` → must exit 0
-   (all cross-refs resolve, frontmatter parses, no binaries, file
-   counts match inventory).
-4. **Commit + tag** the KB:
-   ```bash
-   git -C ~/Alpha\ AI\ OS/alpha-anywhere-kb add -A
-   git -C ~/Alpha\ AI\ OS/alpha-anywhere-kb commit \
-       -m "seed: full migration from notion (snapshot $(date +%F))"
-   git -C ~/Alpha\ AI\ OS/alpha-anywhere-kb tag v1.0.0
-   git -C ~/Alpha\ AI\ OS/alpha-anywhere-kb push origin main --tags
-   ```
-5. **Notion slimdown**: follow `docs/NOTION-SLIMDOWN-RUNBOOK.md`
-   *only after* steps 1–4 succeed and you've sanity-checked the new KB
-   from a clean clone.
+If you ever re-run it (e.g., to migrate a sister workspace), the
+quick form is:
+
+```bash
+node scripts/migrate-from-notion/inventory.mjs
+NOTION_TOKEN=secret_… node scripts/migrate-from-notion/write.mjs \
+    --kb ~/Alpha\ AI\ OS/alpha-anywhere-kb
+node scripts/migrate-from-notion/validate.mjs --kb …
+git -C ~/Alpha\ AI\ OS/alpha-anywhere-kb add -A \
+    && git -C ~/Alpha\ AI\ OS/alpha-anywhere-kb commit \
+        -m "seed: full migration from notion (snapshot $(date +%F))" \
+    && git -C ~/Alpha\ AI\ OS/alpha-anywhere-kb push origin main
+```
 
 ## 5. Hard-forget — wipe data from KB history
 
@@ -163,7 +142,7 @@ every cloned working copy on every laptop.
 
 # 2. Mirror-clone outside any working copy.
 cd /tmp
-git clone --mirror git@github.com:alphaanywhere/alpha-anywhere-kb.git
+git clone --mirror git@github.com:tomasmb/alpha-anywhere-kb.git
 cd alpha-anywhere-kb.git
 
 # 3. Run filter-repo. Either delete a path entirely:
@@ -185,11 +164,9 @@ git reset --hard origin/main
 #    Or simpler: have them re-clone. The bootstrap script handles a
 #    missing/dirty KB cleanly.
 
-# 6. GitHub also retains old SHAs for ~30 days in the reflog. To purge:
-gh api repos/alphaanywhere/alpha-anywhere-kb/dispatches \
-    -f event_type=ghc-purge   # if you have an Action that calls
-                              # the GH support API; otherwise contact
-                              # GitHub support to purge.
+# 6. GitHub also retains old SHAs for ~30 days in the reflog. To
+#    purge sooner, contact GitHub support with the SHAs you need
+#    expunged (no self-serve API for personal repos).
 ```
 
 ### After hard-forget
@@ -205,50 +182,42 @@ reason: <one-line reason>
 ---
 ```
 
-The tombstone is the audit trail; it's the only place a forget remains
-visible after history rewrite.
+The tombstone is the audit trail; it's the only place a forget
+remains visible after history rewrite.
 
-## 6. Auto-invite (v2.x optional)
+## 6. Auto-invite (future, when in an org)
 
 A small webhook that takes a GitHub username and runs the invite
-one-liner removes the human handoff. Spec:
-
-- Tiny serverless endpoint (Cloudflare Worker / Lambda) at
-  `https://invite.alpha-os.alphaanywhere.com`.
-- Authenticated via shared secret baked into the bootstrap script.
-- Body: `{"username": "<gh-handle>", "email": "<work-email>"}`.
-- Server runs the `gh api ...` invite calls server-side using a fine-
-  grained PAT scoped to org+team admin only.
-- Bootstrap POSTs after `gh api user`. Success → "you've been added,
-  rerun me." 4xx → fall back to the manual flow.
-
-Out of scope for v2.0.0; document and budget for v2.1.
+one-liner removes the human handoff. Defer until the repos live in a
+real GitHub org — collaborator-style invites on a personal account
+require the maintainer's PAT and don't justify the infra. Spec
+captured in `TODO-LOCAL.md`.
 
 ## 7. Domain-based auto-provision (Enterprise upgrade path)
 
 Native domain auto-grant requires **GitHub Enterprise Cloud** + SAML
-SSO + SCIM. Path:
+SSO + SCIM. Not applicable to the current personal-account layout.
+When the repos move to an org (see `TODO-LOCAL.md`), the path is:
 
 1. Upgrade the org to GitHub Enterprise Cloud.
-2. In the org settings → Authentication security, enable SAML SSO with
+2. Org settings → Authentication security → enable SAML SSO with
    the IdP (Google Workspace, Okta, Azure AD).
 3. Enable SCIM provisioning. The IdP becomes the source of truth for
    org membership.
-4. Create an IdP group `alpha-employees` and tie it to the
-   `alphaanywhere/employees` GitHub team. SCIM auto-syncs group
-   members.
+4. Create an IdP group `alpha-employees` and tie it to a GitHub team
+   `<org>/employees`. SCIM auto-syncs group members.
 5. Anyone added to the IdP group → auto-invited to the GitHub org +
    team within minutes. No manual invite step.
 
-This eliminates §2 (the daily invite task) once configured. Cost:
+Eliminates §2 (the daily invite task) once configured. Cost:
 Enterprise Cloud per-seat fees + IdP integration time. Worth it once
 ~20+ employees use the system.
 
 ## 8. Updating the assistant repo (publishing changes to all employees)
 
 Daily ritual already runs `git -C ~/Alpha\ AI\ OS/alpha-assistant pull
---rebase --autostash` for every user (see `rituals/README.md`). To ship
-a change:
+--rebase --autostash` for every user (see `rituals/README.md`). To
+ship a change:
 
 ```bash
 cd ~/Alpha\ AI\ OS/alpha-assistant     # your maintainer clone
@@ -262,11 +231,11 @@ gh pr create --fill --base main
 gh pr merge --squash --delete-branch
 ```
 
-Within 24h every active employee's morning ritual pulls the change. For
-breaking changes (new required scripts, Contract additions affecting
-boot), bump `manifest.json` `version` and `.version`, add an entry to
-the `changelog` array — the morning ritual notices a version bump and
-surfaces a one-line "what's new" message to the user.
+Within 24h every active employee's morning ritual pulls the change.
+For breaking changes (new required scripts, Contract additions
+affecting boot), bump `manifest.json` `version` and `.version`, add an
+entry to the `changelog` array — the morning ritual notices a version
+bump and surfaces a one-line "what's new" message to the user.
 
 ## 9. KB linting / CI
 
@@ -286,25 +255,22 @@ lint config itself lives in the KB repo, not here.
 ## 10. Useful gh queries
 
 ```bash
-# Who's in the org
-gh api orgs/alphaanywhere/members --paginate --jq '.[].login'
+# Who has KB access right now (accepted collaborators)
+gh api repos/tomasmb/alpha-anywhere-kb/collaborators \
+    --paginate --jq '.[].login'
 
-# Who has KB access via the team
-gh api orgs/alphaanywhere/teams/employees/members --paginate \
-    --jq '.[].login'
-
-# Who's pending an invite
-gh api orgs/alphaanywhere/invitations --paginate \
-    --jq '.[] | {login, email, created_at}'
+# Pending invites
+gh api repos/tomasmb/alpha-anywhere-kb/invitations \
+    --paginate --jq '.[] | {login: .invitee.login, created_at}'
 
 # Last commit on the KB
-gh api repos/alphaanywhere/alpha-anywhere-kb/commits/main \
+gh api repos/tomasmb/alpha-anywhere-kb/commits/main \
     --jq '{sha: .sha, when: .commit.author.date, msg: .commit.message}'
 
 # Total KB file count by entity type (run from a local clone)
 for d in core/people core/projects core/meetings core/decisions \
-         core/insights core/goals; do
-  printf '%-20s %d\n' "$d" "$(find "$d" -name '*.md' | wc -l)"
+         core/insights core/goals core/teams; do
+  printf '%-20s %d\n' "$d" "$(find "$d" -name '*.md' 2>/dev/null | wc -l)"
 done
 ```
 
@@ -312,6 +278,5 @@ done
 
 - A force-mirror push fails reflog purge: open a support ticket
   referencing the SHA you need expunged. Plan ~48h.
-- SCIM sync stuck: ticket via Enterprise channel.
 - Suspected security incident on the KB: rotate any leaked secrets
   *first*, then run §5, *then* file the ticket. Order matters.

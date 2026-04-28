@@ -9,8 +9,8 @@ repeat.
 
 ## 0. Prerequisites
 
-- You have admin access to both `github.com/alphaanywhere/aa-ai-os-template`
-  and `github.com/alphaanywhere/alpha-anywhere-kb`.
+- You have admin access to both `github.com/tomasmb/aa-ai-os-template`
+  and `github.com/tomasmb/alpha-anywhere-kb`.
 - You have a local clone of both repos as siblings under
   `~/Alpha AI OS/` (run `scripts/install.sh` first if not).
 - Node 20+ is on the PATH (`node --version`).
@@ -102,7 +102,7 @@ git push origin main --tags
 ```
 
 Confirm the GitHub Actions lint workflow goes green
-(<https://github.com/alphaanywhere/alpha-anywhere-kb/actions>). If it
+(<https://github.com/tomasmb/alpha-anywhere-kb/actions>). If it
 fails, the writer emitted something the linter doesn't accept — fix
 the script, rerun, and amend the commit.
 

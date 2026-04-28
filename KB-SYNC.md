@@ -1,6 +1,6 @@
 # KB-SYNC.md — Where I read from and write to in the company KB
 
-> The company brain lives in a sibling git repo: **`alphaanywhere/alpha-anywhere-kb`**.
+> The company brain lives in a sibling git repo: **`tomasmb/alpha-anywhere-kb`**.
 > No Notion. No MCP. Reads are local file ops. Writes are atomic git operations.
 > This file is the single source of truth for KB layout, paths, and sync rules.
 
@@ -10,8 +10,8 @@ The KB is cloned as a **sibling** of this assistant folder. Default layout:
 
 ```text
 ~/Alpha AI OS/
-├── alpha-assistant/        ← this folder (alphaanywhere/aa-ai-os-template, public)
-└── alpha-anywhere-kb/      ← the KB    (alphaanywhere/alpha-anywhere-kb, private)
+├── alpha-assistant/        ← this folder (tomasmb/aa-ai-os-template, public)
+└── alpha-anywhere-kb/      ← the KB    (tomasmb/alpha-anywhere-kb, private)
 ```
 
 The absolute KB path is resolved at every session boot from
@@ -89,7 +89,7 @@ Preflight verifies:
 2. That directory is a git working tree (`.git/` present).
 3. `git status` is clean (no uncommitted local changes from a previous crash).
 4. Current branch is `main`.
-5. Origin matches `https://github.com/alphaanywhere/alpha-anywhere-kb.git`
+5. Origin matches `https://github.com/tomasmb/alpha-anywhere-kb.git`
    (or the org's actual canonical URL).
 6. `git config user.name` and `user.email` are set (assistant needs them
    for commits).
@@ -157,7 +157,7 @@ entity, **update** the existing file instead of creating a duplicate.
 
 ## Update manifest (for self-updates of the assistant repo)
 
-- **Repository:** https://github.com/alphaanywhere/aa-ai-os-template (public)
+- **Repository:** https://github.com/tomasmb/aa-ai-os-template (public)
 - **Update mechanism:** daily `git pull` on this folder by the morning ritual.
   The old zip-based update flow is gone.
 - **Version tracking:** `.version` and `manifest.json` are kept for human

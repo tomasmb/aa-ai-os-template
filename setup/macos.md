@@ -8,7 +8,7 @@ organization. Bring your username — that's all.
 Open **Terminal** and paste:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/alphaanywhere/aa-ai-os-template/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/tomasmb/aa-ai-os-template/main/scripts/install.sh | bash
 ```
 
 What this does:
@@ -52,7 +52,7 @@ mkdir -p "$HOME/Alpha AI OS"
 cd "$HOME/Alpha AI OS"
 
 # 4. Clone the assistant
-git clone https://github.com/alphaanywhere/aa-ai-os-template.git alpha-assistant
+git clone https://github.com/tomasmb/aa-ai-os-template.git alpha-assistant
 
 # 5. Run the bootstrap
 bash alpha-assistant/scripts/bootstrap.sh
